@@ -1,0 +1,6 @@
+[submodule "lib/cvector"]
+	path = lib/cvector
+	url = https://github.com/eteran/c-vector.git
+[submodule "lib/microtar"]
+	path = lib/microtar
+	url = https://github.com/nathanpc/microtar.git
