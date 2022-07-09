@@ -14,8 +14,8 @@ extern "C" {
 
 // Key-Value pair attribute structure definition.
 typedef struct {
-    char *name;
-    char *value;
+	char *name;
+	char *value;
 } part_attr_t;
 
 // Initialization

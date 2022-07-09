@@ -6,31 +6,55 @@
  */
 
 #include "attribute.h"
+
 #include <stdio.h>
 #include <string.h>
 
 /**
  * Initializes an component attribute structure.
- * 
+ *
  * @param attr Attribute structure to be initialized.
  */
 void attr_init(part_attr_t *attr) {
-    attr->name = NULL;
-    attr->value = NULL;
+	attr->name = NULL;
+	attr->value = NULL;
 }
 
 /**
  * Sets the name of the attribute.
- * 
+ *
  * @param attr Attribute to be changed.
  * @param name New name of the attribute.
  */
 void attr_set_name(part_attr_t *attr, const char *name) {
-	//size_t len = strlen()
+	// Make sure we have enough space to store our attribute.
+	attr->name = (char *)realloc(attr->name, (strlen(name) + 1) * sizeof(char));
+
+	// Actually set the attribute.
+	strcpy(attr->name, name);
 }
 
+/**
+ * Sets the name of the attribute.
+ *
+ * @param attr  Attribute to be changed.
+ * @param value New value of the attribute.
+ */
+void attr_set_value(part_attr_t *attr, const char *value) {
+	// Make sure we have enough space to store our attribute.
+	attr->value = (char *)realloc(attr->value,
+								  (strlen(value) + 1) * sizeof(char));
 
-void attr_set_value(part_attr_t *attr, const char *value);
+	// Actually set the attribute.
+	strcpy(attr->value, value);
+}
 
-// Cleanup
-void attr_free(part_attr_t *attr);
+/**
+ * Frees up any resources allocated by the attribute.
+ *
+ * @param attr Attribute to have its contents free'd.
+ */
+void attr_free(part_attr_t *attr) {
+	free(attr->name);
+	free(attr->value);
+}
