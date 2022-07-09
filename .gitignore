@@ -1,3 +1,6 @@
+# Testing directory.
+example/
+
 # Objects and other compilation artifacts.
 *.o
 *.so

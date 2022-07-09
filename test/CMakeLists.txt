@@ -10,7 +10,7 @@ set(PROJECT_LINK_LIBS libpartsexplorer.a)
 # Setup the files we are going to use.
 file(GLOB SOURCES "*.c")
 include_directories(${CMAKE_SOURCE_DIR}/src)
-link_directories(${CMAKE_BINARY_DIR}/lib)
+link_directories(${CMAKE_BINARY_DIR}/libpartsexplorer)
 
 # Build our test binary.
 add_executable(${PROJECT_NAME} ${SOURCES})

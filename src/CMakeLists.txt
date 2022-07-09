@@ -7,8 +7,10 @@
 project(partsexplorer VERSION 0.1.0 LANGUAGES C)
 
 # Setup the files we are going to use.
-file(GLOB SOURCES "*.c")
-file(GLOB HEADERS "*.h")
+file(GLOB SOURCES "*.c" "../lib/microtar/src/*.c")
+file(GLOB HEADERS "*.h" "../lib/microtar/src/*.h")
+include_directories(${CMAKE_SOURCE_DIR}/lib/cvector
+  ${CMAKE_SOURCE_DIR}/lib/microtar/src)
 
 # Build our static library
 add_library(${PROJECT_NAME} STATIC ${SOURCES})

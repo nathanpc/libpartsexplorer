@@ -18,5 +18,5 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # Compile the static library.
-add_subdirectory(src ${CMAKE_BINARY_DIR}/lib)
-add_subdirectory(test ${CMAKE_BINARY_DIR}/bin)
+add_subdirectory(src ${CMAKE_BINARY_DIR}/libpartsexplorer)
+add_subdirectory(test ${CMAKE_BINARY_DIR}/petest)

@@ -8,7 +8,7 @@
 #include <partsexplorer.h>
 #include <stdio.h>
 
-int main(int argc, char **argv) {
+int main(void) {
     printf("Secret of life: %d\n", pe_test());
     return 0;
 }
