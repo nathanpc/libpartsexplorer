@@ -1,15 +1,13 @@
 /**
- * partsexplorer.c
+ * pecan.c
  * The helper library to deal with your electronic components definitions.
  *
  * @author Nathan Campos <nathan@innoveworkshop.com>
  */
 
-#include "partsexplorer.h"
+#include "pecan.h"
 #include <stdio.h>
 #include <string.h>
-#include <cvector.h>
-#include <microtar.h>
 
 // A simple test of our build setup.
 int pe_test(void) {
@@ -17,7 +15,7 @@ int pe_test(void) {
     const char *str1 = "Hello world";
     const char *str2 = "Goodbye world";
 
-    mtar_open(&tar, "~/dev/parts-explorer/example/example.tar", "w");
+    mtar_open(&tar, "/home/nathan/dev/parts-explorer/example/example.tar", "w");
 
     /* Write strings to files `test1.txt` and `test2.txt` */
     mtar_write_file_header(&tar, "test1.txt", strlen(str1));

@@ -1,19 +1,29 @@
 /**
- * partsexplorer.h
+ * pecan.h
  * The helper library to deal with your electronic components definitions.
  * 
  * @author Nathan Campos <nathan@innoveworkshop.com>
  */
 
-#ifndef _PARTSEXPLORER_H
-#define _PARTSEXPLORER_H
+#ifndef _PECAN_H
+#define _PECAN_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <cvector.h>
+#include <microtar.h>
+#include "attribute.h"
+
 // Library export definition.
 #define PELIB_EXPORTS extern
+
+// Component archive structure definition.
+typedef struct {
+    char *fname;
+    cvector_vector_type(part_attr_t) attribs;
+} cmp_archive_t;
 
 PELIB_EXPORTS int pe_test(void);
 
@@ -21,4 +31,4 @@ PELIB_EXPORTS int pe_test(void);
 }
 #endif
 
-#endif /* _PARTSEXPLORER_H */
+#endif /* _PECAN_H */

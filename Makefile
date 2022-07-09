@@ -6,7 +6,7 @@
 include variables.mk
 
 # Project
-PROJECT = partsexplorer
+PROJECT = pecan
 LIBEXT  = a
 
 # Directories and Paths
@@ -19,7 +19,7 @@ EXAMPLEDIR := example
 # Fragments
 TARGET   = $(BUILDDIR)/lib$(PROJECT).$(LIBEXT)
 CFLAGS  += -I$(EXTLIBDIR)/cvector -I$(EXTLIBDIR)/microtar/src
-SOURCES += $(SRCDIR)/partsexplorer.c $(SRCDIR)/attribute.c
+SOURCES += $(SRCDIR)/pecan.c $(SRCDIR)/attribute.c
 OBJECTS := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
 OBJECTS += $(BUILDDIR)/microtar.o
 

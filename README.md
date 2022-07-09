@@ -1,7 +1,8 @@
-# Parts Explorer Library
+# 🥜 Pecan Library
 
-A C library that helps us parse PartsExplorer files. Allowing us to literally
-have "eletronic components" parts definitions in our file system.
+A C library that helps us parse component archives that define electronic
+components in your parts bins, allowing us to have a virtual representation that
+is browseable of our components in our parts bins.
 
 
 ## License
