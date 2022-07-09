@@ -16,17 +16,17 @@ extern "C" {
 typedef struct {
 	char *name;
 	char *value;
-} part_attr_t;
+} pecan_attr_t;
 
 // Initialization
-void attr_init(part_attr_t *attr);
+void attr_init(pecan_attr_t *attr);
 
 // Setters
-void attr_set_name(part_attr_t *attr, const char *name);
-void attr_set_value(part_attr_t *attr, const char *value);
+void attr_set_name(pecan_attr_t *attr, const char *name);
+void attr_set_value(pecan_attr_t *attr, const char *value);
 
 // Cleanup
-void attr_free(part_attr_t *attr);
+void attr_free(pecan_attr_t attr);
 
 #ifdef __cplusplus
 }

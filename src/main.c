@@ -9,6 +9,5 @@
 #include "pecan.h"
 
 int main(void) {
-    printf("Secret of life: %d\n", pe_test());
-    return 0;
+	return 0;
 }
