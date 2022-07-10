@@ -12,19 +12,20 @@ LIBEXT  = a
 # Directories and Paths
 SRCDIR      = src
 EXTLIBDIR   = lib
-TESTDIR     = test
 BUILDDIR   := build
 EXAMPLEDIR := example
 
 # Fragments
-TARGET   = $(BUILDDIR)/lib$(PROJECT).$(LIBEXT)
-CFLAGS  += -I$(EXTLIBDIR)/cvector -I$(EXTLIBDIR)/microtar/src
-SOURCES += $(SRCDIR)/pecan.c $(SRCDIR)/attribute.c
-OBJECTS := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
-OBJECTS += $(BUILDDIR)/microtar.o
+TARGET    = $(BUILDDIR)/lib$(PROJECT).$(LIBEXT)
+EXETARGET = $(BUILDDIR)/test
+CFLAGS   += -I$(EXTLIBDIR)/cvector -I$(EXTLIBDIR)/microtar/src
+SRCNAMES += pecan.c attribute.c parser.c fileutils.c
+SOURCES  += $(addprefix $(SRCDIR)/, $(SRCNAMES))
+OBJECTS  := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
+OBJECTS  += $(BUILDDIR)/microtar.o
 
 .PHONY: all compile run test debug memcheck clean
-all: compile test
+all: compile
 
 compile: $(BUILDDIR)/stamp $(TARGET)
 
@@ -45,14 +46,17 @@ $(BUILDDIR)/stamp:
 run: test
 
 debug: CFLAGS += -g3 -DDEBUG
-debug: clean run
+debug: clean $(EXETARGET)
+	$(GDB) $(EXETARGET)
 
 memcheck: CFLAGS += -g3 -DDEBUG -DMEMCHECK
-memcheck: clean run
+memcheck: clean $(EXETARGET)
+	valgrind --tool=memcheck --leak-check=yes --show-leak-kinds=all \
+		--track-origins=yes --log-file=$(BUILDDIR)/valgrind.log $(EXETARGET)
+	cat $(BUILDDIR)/valgrind.log
 
 clean:
 	$(RM) -r $(BUILDDIR)
-	$(RM) valgrind.log
 
 ###
 ### MicroTAR External Library
@@ -65,12 +69,12 @@ $(BUILDDIR)/microtar.o: $(EXTLIBDIR)/microtar/src/microtar.c
 ### Library Test Program
 ###
 
-test: $(BUILDDIR)/test
-	$(BUILDDIR)/test
+test: $(EXETARGET)
+	$(EXETARGET)
 
-$(BUILDDIR)/test: LDFLAGS += -L$(BUILDDIR)
-$(BUILDDIR)/test: LDLIBS += -l$(PROJECT)
-$(BUILDDIR)/test: $(BUILDDIR)/main.o
+$(EXETARGET): LDFLAGS += -L$(BUILDDIR)
+$(EXETARGET): LDLIBS += -l$(PROJECT)
+$(EXETARGET): $(BUILDDIR)/main.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 $(BUILDDIR)/main.o: compile $(SRCDIR)/main.c
