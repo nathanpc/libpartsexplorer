@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "fileutils.h"
+#include "parser.h"
+
 /**
  * Initializes an component structure.
  *
@@ -32,6 +35,9 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
  * @param  part  Empty component archive to be populated.
  * @param  fname Path to the component archive file.
  * @return       PECAN_OK if the operation was successful.
+ *               PECAN_ERR_PATH_NOT_FOUND if the specified path wasn't found.
+ *               PECAN_ERR_FILE_IO if the archive was corrupted.
+ *               PECAN_ERR_PARSE if there were parsing errors.
  */
 pecan_err_t pecan_read(pecan_archive_t *part, const char *fname) {
 	return PECAN_ERR_UNKNOWN;
@@ -43,6 +49,8 @@ pecan_err_t pecan_read(pecan_archive_t *part, const char *fname) {
  * @param  part  Component archive structure to be saved to disk.
  * @param  fname Path to the component archive file to write to.
  * @return       PECAN_OK if the operation was successful.
+ *               PECAN_ERR_PATH_NOT_FOUND if the specified path wasn't writable.
+ *               PECAN_ERR_FILE_IO if there were errors while trying to write.
  */
 pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	return PECAN_ERR_UNKNOWN;
@@ -50,7 +58,7 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	const char *str1 = "Hello world";
 	const char *str2 = "Goodbye world";
 
-	mtar_open(&tar, "/home/nathan/dev/parts-explorer/example/example.tar", "w");
+	mtar_open(&tar, "example/example.tar", "w");
 
 	/* Write strings to files `test1.txt` and `test2.txt` */
 	mtar_write_file_header(&tar, "test1.txt", strlen(str1));
@@ -65,6 +73,20 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	mtar_close(&tar);
 
 	return PECAN_ERR_UNKNOWN;
+}
+
+/**
+ * Frees up any resources allocated by the archive structure.
+ *
+ * @param part Component archive to have its contents free'd.
+ */
+void pecan_free(pecan_archive_t *part) {
+	// Free our path name.
+	free(part->fname);
+	part->fname = NULL;
+
+	// Free up all of our attributes.
+	cvector_free_each_and_free(part->attribs, attr_free);
 }
 
 /**
@@ -133,15 +155,31 @@ pecan_attr_t *pecan_get_attr(pecan_archive_t *part, const char *name) {
 }
 
 /**
- * Frees up any resources allocated by the archive structure.
+ * Reads an unpacked component archive and populates the archive structure.
  *
- * @param part Component archive to have its contents free'd.
+ * @param  part Empty component archive to be populated.
+ * @param  path Path to the directory of the unpacked component archive.
+ * @return      PECAN_OK if the operation was successful.
+ *              PECAN_ERR_PATH_NOT_FOUND if the specified path wasn't found.
+ *              PECAN_ERR_PARSE if there were parsing errors.
  */
-void pecan_free(pecan_archive_t *part) {
-	// Free our path name.
-	free(part->fname);
-	part->fname = NULL;
+pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path) {
+	char *fpath;
+	char *contents;
+	pecan_err_t err = PECAN_OK;
 
-	// Free up all of our attributes.
-	cvector_free_each_and_free(part->attribs, attr_free);
+	// Grab the contents of the attributes file.
+	pathcat(2, &fpath, path, PECAN_MANIFEST_FILE);
+	contents = slurp_file(fpath);
+	free(fpath);
+	fpath = NULL;
+	if (contents == NULL)
+		return PECAN_ERR_PATH_NOT_FOUND;
+	
+	// Parse the attributes.
+	err = parse_attributes(part, contents);
+	if (err)
+		return err;
+
+	return err;
 }

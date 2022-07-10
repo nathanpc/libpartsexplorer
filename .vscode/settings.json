@@ -2,7 +2,8 @@
 	"files.associations": {
 		"cvector.h": "c",
 		"typeinfo": "c",
-		"cvector_utils.h": "c"
+		"cvector_utils.h": "c",
+		"stdbool.h": "c"
 	},
 	"C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
 	"C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 4, TabWidth: 4, UseTab: Always, ColumnLimit: 0 }",
