@@ -1,7 +1,7 @@
-# Testing directory.
+# Testing Stuff
 example/
 
-# Objects and other compilation artifacts.
+# Compilation Artifacts
 *.o
 *.so
 build/
@@ -9,18 +9,28 @@ Debug/
 *Dbg/
 *Rel/
 
-# Visual Studio.
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
+
+# Visual Studio
 *.plg
 *.opt
 *.vbw
 *.ncb
 
-# eMbedded Visual Studio.
+# eMbedded Visual Studio
 *.vco
 *.vcb
 *.vcl
 
-# Debugging artifacts.
+# Debugging Artifacts
 valgrind*
 
 # Misc.
