@@ -57,7 +57,7 @@ void attr_set_value(pecan_attr_t *attr, const char *value) {
  */
 void attr_free(pecan_attr_t attr) {
 	free(attr.name);
-    attr.name = NULL;
-    free(attr.value);
-    attr.value = NULL;
+	attr.name = NULL;
+	free(attr.value);
+	attr.value = NULL;
 }
