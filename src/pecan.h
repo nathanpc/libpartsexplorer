@@ -28,6 +28,7 @@ extern "C" {
 
 // Pecan return status enumeration.
 typedef enum {
+	PECAN_SPECIAL = -100,
 	PECAN_OK = 0,
 	PECAN_ERR_PATH_NOT_FOUND,
 	PECAN_ERR_FILE_IO,
