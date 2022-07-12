@@ -14,6 +14,12 @@
 
 #include "attribute.h"
 
+// Parsing stages enumerator.
+typedef enum {
+	PARSING_NAME = 0,
+	PARSING_VALUE
+} parse_stage_t;
+
 /**
  * A very simple attribute file lexer.
  *
@@ -61,25 +67,42 @@ pecan_err_t lex_attr(const char *str, const char **start, const char **end) {
  *                  PECAN_ERR_PARSE if there were parsing errors.
  */
 pecan_err_t parse_attributes(pecan_archive_t *part, const char *contents) {
+	parse_stage_t stage;
+	pecan_attr_t attr;
 	const char *start;
 	const char *end;
-	pecan_attr_t attr;
 
 	// Initialize our attribute structure.
 	attr_init(&attr);
 
+	// Lex the contents and parse out the attributes.
+	stage = PARSING_NAME;
 	end = contents;
 	while (lex_attr(end, &start, &end) != PECAN_OK) {
-		const char *tmp = start;
-		
-		printf("'");
-		while (tmp != end) {
-			printf("%c", *tmp++);
-		}
-		printf("' ");
-	}
-	printf("\n");
+		switch (stage) {
+		case PARSING_NAME:
+			// Parsing the attribute name.
+			if (*start == '=') {
+				stage = PARSING_VALUE;
+				continue;
+			}
 
-	//printf("%s\n", contents);
+			attr_set_name_tk(&attr, start, end);
+			break;
+		case PARSING_VALUE:
+			if (*start == '\n') {
+				cvector_push_back(part->attribs, attr);
+				attr_init(&attr);
+
+				stage = PARSING_NAME;
+				continue;
+			}
+
+			// TODO: Concatenate the values until a newline.
+			attr_set_value_tk(&attr, start, end);
+			break;
+		}
+	}
+
 	return PECAN_OK;
 }
