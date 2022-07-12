@@ -39,6 +39,29 @@ void attr_set_name(pecan_attr_t *attr, const char *name) {
  * Sets the name of the attribute.
  *
  * @param attr  Attribute to be changed.
+ * @param start Pointer to the start of the new name of the attribute.
+ * @param end   Pointer to the start of the new name of the attribute.
+ */
+void attr_set_name_tk(pecan_attr_t *attr, const char *start, const char *end) {
+	char *buftmp;
+	const char *tmp;
+
+	// Make sure we have enough space to store our attribute.
+	attr->name = (char *)realloc(attr->name, (end - start + 1) * sizeof(char));
+
+	// Copy the token to the attribute.
+	buftmp = attr->name;
+	tmp = start;
+	while (tmp != end) {
+		*buftmp++ = *tmp++;
+	}
+	*buftmp = '\0';
+}
+
+/**
+ * Sets the name of the attribute.
+ *
+ * @param attr  Attribute to be changed.
  * @param value New value of the attribute.
  */
 void attr_set_value(pecan_attr_t *attr, const char *value) {
@@ -48,6 +71,29 @@ void attr_set_value(pecan_attr_t *attr, const char *value) {
 
 	// Actually set the attribute.
 	strcpy(attr->value, value);
+}
+
+/**
+ * Sets the value of the attribute.
+ *
+ * @param attr  Attribute to be changed.
+ * @param start Pointer to the start of the new value of the attribute.
+ * @param end   Pointer to the start of the new value of the attribute.
+ */
+void attr_set_value_tk(pecan_attr_t *attr, const char *start, const char *end) {
+	char *buftmp;
+	const char *tmp;
+
+	// Make sure we have enough space to store our attribute.
+	attr->value = (char *)realloc(attr->value, (end - start + 1) * sizeof(char));
+
+	// Copy the token to the attribute.
+	buftmp = attr->value;
+	tmp = start;
+	while (tmp != end) {
+		*buftmp++ = *tmp++;
+	}
+	*buftmp = '\0';
 }
 
 /**
