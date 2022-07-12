@@ -155,6 +155,32 @@ pecan_attr_t *pecan_get_attr(pecan_archive_t *part, const char *name) {
 }
 
 /**
+ * Gets an attribute from the component by its index.
+ *
+ * @param  part  Component archive structure.
+ * @param  index Index of the attribute to fetch.
+ * @return       The requested attribute or NULL if the index is out-of-range.
+ */
+pecan_attr_t *pecan_get_attr_idx(pecan_archive_t *part, size_t index) {
+	// Check if the index is valid.
+	if (index >= cvector_size(part->attribs))
+		return NULL;
+
+	// Return our attribute.
+	return &part->attribs[index];
+}
+
+/**
+ * Gets the number of attributes of the component.
+ *
+ * @param  part Component archive structure.
+ * @return      Number of attributes stored in the component archive.
+ */
+size_t pecan_get_attr_len(pecan_archive_t *part){
+	return cvector_size(part->attribs);
+}
+
+/**
  * Reads an unpacked component archive and populates the archive structure.
  *
  * @param  part Empty component archive to be populated.
@@ -178,8 +204,14 @@ pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path) {
 	
 	// Parse the attributes.
 	err = parse_attributes(part, contents);
-	if (err)
-		return err;
-
 	return err;
+}
+
+/**
+ * Pretty prints the contents of an attribute for debugging purposes.
+ * 
+ * @param attr Attribute to be printed.
+ */
+void pecan_print_attr(pecan_attr_t attr) {
+	printf("%s = \"%s\"", attr.name, attr.value);
 }

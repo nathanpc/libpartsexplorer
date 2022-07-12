@@ -50,7 +50,8 @@ PECAN_EXPORTS pecan_err_t pecan_read(pecan_archive_t *part, const char *fname);
 PECAN_EXPORTS pecan_err_t pecan_write(pecan_archive_t *part, const char *fname);
 
 // Unpacked Archive
-pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path);
+PECAN_EXPORTS pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part,
+												  const char *path);
 
 // Attributes
 PECAN_EXPORTS void pecan_add_attr(pecan_archive_t *part, const char *name,
@@ -59,9 +60,15 @@ PECAN_EXPORTS void pecan_set_attr(pecan_archive_t *part, const char *name,
 								  const char *value);
 PECAN_EXPORTS pecan_attr_t *pecan_get_attr(pecan_archive_t *part,
 										   const char *name);
+PECAN_EXPORTS pecan_attr_t *pecan_get_attr_idx(pecan_archive_t *part,
+											   size_t index);
+PECAN_EXPORTS size_t pecan_get_attr_len(pecan_archive_t *part);
 
 // Clean up
 PECAN_EXPORTS void pecan_free(pecan_archive_t *part);
+
+// Debugging
+PECAN_EXPORTS void pecan_print_attr(pecan_attr_t attr);
 
 #ifdef __cplusplus
 }
