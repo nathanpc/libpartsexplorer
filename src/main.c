@@ -22,10 +22,23 @@
 int main(int argc, char **argv) {
 	pecan_err_t err;
 	pecan_archive_t part;
+	size_t idx;
 
+	// Initialize the archive.
+	pecan_init(&part);
+
+	// Read an unpacked component for testing.
 	err = pecan_unpacked_read_dir(&part, "example");
 	if (err)
-		return err;
+		goto cleanup;
 
-	return 0;
+	// Print out its attributes.
+	for (idx = 0; idx < pecan_get_attr_len(&part); idx++) {
+		pecan_print_attr(*pecan_get_attr_idx(&part, idx));
+		printf("\n");
+	}
+
+cleanup:
+	pecan_free(&part);
+	return err;
 }
