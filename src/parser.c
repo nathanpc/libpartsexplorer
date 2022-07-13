@@ -31,9 +31,9 @@ typedef enum {
  */
 pecan_err_t lex_attr(const char *str, const char **start, const char **end) {
 	const char *tmp = str;
-	const char *ws = " \t\r";
-	const char *delim = "=\r\n";
-	const char *sep = "=\n";
+	const char *ws = " \r";
+	const char *delim = "\t\r\n";
+	const char *sep = "\t\n";
 
 	// Skip any leading whitespace.
 	tmp += strspn(tmp, ws);
@@ -82,7 +82,7 @@ pecan_err_t parse_attributes(pecan_archive_t *part, const char *contents) {
 		switch (stage) {
 		case PARSING_NAME:
 			// Parsing the attribute name.
-			if (*start == '=') {
+			if (*start == '\t') {
 				stage = PARSING_VALUE;
 				continue;
 			}

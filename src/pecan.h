@@ -23,7 +23,7 @@ extern "C" {
 // File name definitions.
 #define PECAN_DATASHEET_FILE "datasheet.pdf"
 #define PECAN_IMAGE_FILE     "image.bmp"
-#define PECAN_MANIFEST_FILE  "manifest.ini"
+#define PECAN_MANIFEST_FILE  "manifest.tsv"
 #define PECAN_PARAM_FILE     "parameters.tsv"
 
 // Pecan return status enumeration.
