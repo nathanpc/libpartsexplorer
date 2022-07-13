@@ -16,7 +16,8 @@ extern "C" {
 #include "pecan.h"
 
 // Attributes
-pecan_err_t parse_attributes(pecan_archive_t *part, const char *contents);
+pecan_err_t parse_attributes(pecan_archive_t *part, pecan_attr_type_t type,
+							 const char *contents);
 
 #ifdef __cplusplus
 }

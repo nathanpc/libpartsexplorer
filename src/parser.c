@@ -62,11 +62,13 @@ pecan_err_t lex_attr(const char *str, const char **start, const char **end) {
  * Parses the attributes INI file and populates the component archive structure.
  *
  * @param  part     Component archive structure.
+ * @param  type     Type of attribute.
  * @param  contents Contents of the attributes file.
  * @return          PECAN_OK if the operation was successful.
  *                  PECAN_ERR_PARSE if there were parsing errors.
  */
-pecan_err_t parse_attributes(pecan_archive_t *part, const char *contents) {
+pecan_err_t parse_attributes(pecan_archive_t *part, pecan_attr_type_t type,
+							 const char *contents) {
 	parse_stage_t stage;
 	pecan_attr_t attr;
 	const char *start;
@@ -91,7 +93,7 @@ pecan_err_t parse_attributes(pecan_archive_t *part, const char *contents) {
 			break;
 		case PARSING_VALUE:
 			if (*start == '\n') {
-				cvector_push_back(part->attribs, attr);
+				pecan_add_attr(part, type, attr);
 				attr_init(&attr);
 
 				stage = PARSING_NAME;

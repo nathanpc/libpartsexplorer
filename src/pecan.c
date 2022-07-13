@@ -25,6 +25,7 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
 	// NULL out everything.
 	part->fname = NULL;
 	part->attribs = NULL;
+	part->params = NULL;
 
 	return PECAN_OK;
 }
@@ -87,16 +88,39 @@ void pecan_free(pecan_archive_t *part) {
 
 	// Free up all of our attributes.
 	cvector_free_each_and_free(part->attribs, attr_free);
+	cvector_free_each_and_free(part->params, attr_free);
 }
 
 /**
  * Adds an attribute to the component without checking if it already exists.
  *
  * @param part  Component archive structure.
+ * @param type  Type of attribute.
+ * @param attr  Attribute to be added to the list.
+ */
+void pecan_add_attr(pecan_archive_t *part, pecan_attr_type_t type,
+					pecan_attr_t attr) {
+	// Push the attribute into the vector.
+	switch (type) {
+	case PECAN_MANIFEST:
+		cvector_push_back(part->attribs, attr);
+		break;
+	case PECAN_PARAMETERS:
+		cvector_push_back(part->params, attr);
+		break;
+	}
+}
+
+/**
+ * Adds an attribute to the component without checking if it already exists.
+ *
+ * @param part  Component archive structure.
+ * @param type  Type of attribute.
  * @param name  Name of the attribute.
  * @param value Value of the attribute.
  */
-void pecan_add_attr(pecan_archive_t *part, const char *name, const char *value) {
+void pecan_add_attr_str(pecan_archive_t *part, pecan_attr_type_t type,
+						const char *name, const char *value) {
 	pecan_attr_t attr;
 
 	// Create and populate the attribute.
@@ -105,7 +129,7 @@ void pecan_add_attr(pecan_archive_t *part, const char *name, const char *value) 
 	attr_set_value(&attr, value);
 
 	// Push the attribute into the vector.
-	cvector_push_back(part->attribs, attr);
+	pecan_add_attr(part, type, attr);
 }
 
 /**
@@ -113,16 +137,18 @@ void pecan_add_attr(pecan_archive_t *part, const char *name, const char *value) 
  * it'll be created.
  *
  * @param part  Component archive structure.
+ * @param type  Type of attribute.
  * @param name  Name of the attribute to be set.
  * @param value Value of the attribute to be set to.
  */
-void pecan_set_attr(pecan_archive_t *part, const char *name, const char *value) {
+void pecan_set_attr(pecan_archive_t *part, pecan_attr_type_t type,
+					const char *name, const char *value) {
 	// Try to get the attribute.
-	pecan_attr_t *attr = pecan_get_attr(part, name);
+	pecan_attr_t *attr = pecan_get_attr(part, type, name);
 
 	// Should we create a new attribute?
 	if (!attr) {
-		pecan_add_attr(part, name, value);
+		pecan_add_attr_str(part, type, name, value);
 		return;
 	}
 
@@ -134,16 +160,28 @@ void pecan_set_attr(pecan_archive_t *part, const char *name, const char *value) 
  * Gets an attribute from the component by its name.
  *
  * @param  part Component archive structure.
+ * @param  type Type of attribute.
  * @param  name Name of the attribute to be found.
  * @return      Attribute found in the component or NULL if one wasn't found.
  */
-pecan_attr_t *pecan_get_attr(pecan_archive_t *part, const char *name) {
+pecan_attr_t *pecan_get_attr(pecan_archive_t *part, pecan_attr_type_t type,
+							 const char *name) {
+	pecan_attr_t *attrs;
+	switch (type) {
+		case PECAN_MANIFEST:
+			attrs = part->attribs;
+			break;
+		case PECAN_PARAMETERS:
+			attrs = part->params;
+			break;
+	}
+
 	// Check if we have anything in the attributes vector.
-	if (part->attribs) {
+	if (attrs) {
 		pecan_attr_t *it;
 
 		// Iterate over the attributes trying to find a matching attribute name.
-		for (it = cvector_begin(part->attribs); it != cvector_end(part->attribs); ++it) {
+		for (it = cvector_begin(attrs); it != cvector_end(attrs); ++it) {
 			// Check if the names match.
 			if (strcmp(it->name, name) == 0)
 				return it;
@@ -158,26 +196,49 @@ pecan_attr_t *pecan_get_attr(pecan_archive_t *part, const char *name) {
  * Gets an attribute from the component by its index.
  *
  * @param  part  Component archive structure.
+ * @param  type  Type of attribute.
  * @param  index Index of the attribute to fetch.
  * @return       The requested attribute or NULL if the index is out-of-range.
  */
-pecan_attr_t *pecan_get_attr_idx(pecan_archive_t *part, size_t index) {
+pecan_attr_t *pecan_get_attr_idx(pecan_archive_t *part, pecan_attr_type_t type,
+								 size_t index) {
+	pecan_attr_t *attrs;
+	switch (type) {
+		case PECAN_MANIFEST:
+			attrs = part->attribs;
+			break;
+		case PECAN_PARAMETERS:
+			attrs = part->params;
+			break;
+	}
+
 	// Check if the index is valid.
-	if (index >= cvector_size(part->attribs))
+	if (index >= cvector_size(attrs))
 		return NULL;
 
 	// Return our attribute.
-	return &part->attribs[index];
+	return &attrs[index];
 }
 
 /**
  * Gets the number of attributes of the component.
  *
  * @param  part Component archive structure.
+ * @param  type Type of attribute.
  * @return      Number of attributes stored in the component archive.
  */
-size_t pecan_get_attr_len(pecan_archive_t *part){
-	return cvector_size(part->attribs);
+size_t pecan_get_attr_len(pecan_archive_t *part, pecan_attr_type_t type) {
+	pecan_attr_t *attrs;
+	switch (type) {
+		case PECAN_MANIFEST:
+			attrs = part->attribs;
+			break;
+		case PECAN_PARAMETERS:
+			attrs = part->params;
+			break;
+	}
+
+	return cvector_size(attrs);
 }
 
 /**
@@ -194,7 +255,7 @@ pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path) {
 	char *contents;
 	pecan_err_t err = PECAN_OK;
 
-	// Grab the contents of the attributes file.
+	// Grab the contents of the manifest attributes file.
 	pathcat(2, &fpath, path, PECAN_MANIFEST_FILE);
 	contents = slurp_file(fpath);
 	free(fpath);
@@ -202,8 +263,26 @@ pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path) {
 	if (contents == NULL)
 		return PECAN_ERR_PATH_NOT_FOUND;
 	
+	// Parse the manifest attributes.
+	err = parse_attributes(part, PECAN_MANIFEST, contents);
+	free(contents);
+	contents = NULL;
+	if (err)
+		return err;
+
+	// Grab the contents of the attributes file.
+	pathcat(2, &fpath, path, PECAN_PARAM_FILE);
+	contents = slurp_file(fpath);
+	free(fpath);
+	fpath = NULL;
+	if (contents == NULL)
+		return PECAN_ERR_PATH_NOT_FOUND;
+
 	// Parse the attributes.
-	err = parse_attributes(part, contents);
+	err = parse_attributes(part, PECAN_PARAMETERS, contents);
+	free(contents);
+	contents = NULL;
+
 	return err;
 }
 
@@ -213,5 +292,5 @@ pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path) {
  * @param attr Attribute to be printed.
  */
 void pecan_print_attr(pecan_attr_t attr) {
-	printf("%s = \"%s\"", attr.name, attr.value);
+	printf("\"%s\" = \"%s\"", attr.name, attr.value);
 }

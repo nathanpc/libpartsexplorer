@@ -26,6 +26,12 @@ extern "C" {
 #define PECAN_MANIFEST_FILE  "manifest.tsv"
 #define PECAN_PARAM_FILE     "parameters.tsv"
 
+// Attributes switch enumeration.
+typedef enum {
+	PECAN_MANIFEST = 0,
+	PECAN_PARAMETERS
+} pecan_attr_type_t;
+
 // Pecan return status enumeration.
 typedef enum {
 	PECAN_SPECIAL = -100,
@@ -40,6 +46,7 @@ typedef enum {
 typedef struct {
 	char *fname;
 	cvector_vector_type(pecan_attr_t) attribs;
+	cvector_vector_type(pecan_attr_t) params;
 } pecan_archive_t;
 
 // Initialization
@@ -54,15 +61,20 @@ PECAN_EXPORTS pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part,
 												  const char *path);
 
 // Attributes
-PECAN_EXPORTS void pecan_add_attr(pecan_archive_t *part, const char *name,
-								  const char *value);
-PECAN_EXPORTS void pecan_set_attr(pecan_archive_t *part, const char *name,
-								  const char *value);
+PECAN_EXPORTS void pecan_add_attr(pecan_archive_t *part, pecan_attr_type_t type,
+								  pecan_attr_t attr);
+PECAN_EXPORTS void pecan_add_attr_str(pecan_archive_t *part, pecan_attr_type_t type,
+									  const char *name, const char *value);
+PECAN_EXPORTS void pecan_set_attr(pecan_archive_t *part, pecan_attr_type_t type,
+								  const char *name, const char *value);
 PECAN_EXPORTS pecan_attr_t *pecan_get_attr(pecan_archive_t *part,
+										   pecan_attr_type_t type,
 										   const char *name);
 PECAN_EXPORTS pecan_attr_t *pecan_get_attr_idx(pecan_archive_t *part,
+											   pecan_attr_type_t type,
 											   size_t index);
-PECAN_EXPORTS size_t pecan_get_attr_len(pecan_archive_t *part);
+PECAN_EXPORTS size_t pecan_get_attr_len(pecan_archive_t *part,
+										pecan_attr_type_t type);
 
 // Clean up
 PECAN_EXPORTS void pecan_free(pecan_archive_t *part);

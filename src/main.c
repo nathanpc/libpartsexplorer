@@ -33,8 +33,18 @@ int main(int argc, char **argv) {
 		goto cleanup;
 
 	// Print out its attributes.
-	for (idx = 0; idx < pecan_get_attr_len(&part); idx++) {
-		pecan_print_attr(*pecan_get_attr_idx(&part, idx));
+	printf("=============== Manifest [%zu] ===============\n",
+		   pecan_get_attr_len(&part, PECAN_MANIFEST));
+	for (idx = 0; idx < pecan_get_attr_len(&part, PECAN_MANIFEST); idx++) {
+		pecan_print_attr(*pecan_get_attr_idx(&part, PECAN_MANIFEST, idx));
+		printf("\n");
+	}
+
+	// Print out its attributes.
+	printf("\n=============== Parameters [%zu] ===============\n",
+		   pecan_get_attr_len(&part, PECAN_PARAMETERS));
+	for (idx = 0; idx < pecan_get_attr_len(&part, PECAN_PARAMETERS); idx++) {
+		pecan_print_attr(*pecan_get_attr_idx(&part, PECAN_PARAMETERS, idx));
 		printf("\n");
 	}
 
