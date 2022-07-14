@@ -41,7 +41,7 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
  *               PECAN_ERR_PARSE if there were parsing errors.
  */
 pecan_err_t pecan_read(pecan_archive_t *part, const char *fname) {
-	return PECAN_ERR_UNKNOWN;
+	return PECAN_ERR_NOT_IMPLEMENTED;
 }
 
 /**
@@ -54,26 +54,7 @@ pecan_err_t pecan_read(pecan_archive_t *part, const char *fname) {
  *               PECAN_ERR_FILE_IO if there were errors while trying to write.
  */
 pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
-	return PECAN_ERR_UNKNOWN;
-	mtar_t tar;
-	const char *str1 = "Hello world";
-	const char *str2 = "Goodbye world";
-
-	mtar_open(&tar, "example/example.tar", "w");
-
-	/* Write strings to files `test1.txt` and `test2.txt` */
-	mtar_write_file_header(&tar, "test1.txt", strlen(str1));
-	mtar_write_data(&tar, str1, strlen(str1));
-	mtar_write_file_header(&tar, "test2.txt", strlen(str2));
-	mtar_write_data(&tar, str2, strlen(str2));
-
-	/* Finalize -- this needs to be the last thing done before closing */
-	mtar_finalize(&tar);
-
-	/* Close archive */
-	mtar_close(&tar);
-
-	return PECAN_ERR_UNKNOWN;
+	return PECAN_ERR_NOT_IMPLEMENTED;
 }
 
 /**

@@ -39,7 +39,8 @@ typedef enum {
 	PECAN_ERR_PATH_NOT_FOUND,
 	PECAN_ERR_FILE_IO,
 	PECAN_ERR_PARSE,
-	PECAN_ERR_UNKNOWN
+	PECAN_ERR_UNKNOWN,
+	PECAN_ERR_NOT_IMPLEMENTED
 } pecan_err_t;
 
 // Component archive structure definition.
