@@ -46,8 +46,8 @@ typedef enum {
 // Component archive structure definition.
 typedef struct {
 	char *fname;
-	cvector_vector_type(pecan_attr_t) attribs;
-	cvector_vector_type(pecan_attr_t) params;
+	pecan_attr_arr_t attribs;
+	pecan_attr_arr_t params;
 } pecan_archive_t;
 
 // Initialization

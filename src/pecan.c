@@ -41,7 +41,51 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
  *               PECAN_ERR_PARSE if there were parsing errors.
  */
 pecan_err_t pecan_read(pecan_archive_t *part, const char *fname) {
-	return PECAN_ERR_NOT_IMPLEMENTED;
+	mtar_t tar;
+	mtar_header_t header;
+	char *contents = NULL;
+	pecan_err_t err = PECAN_OK;
+	int mterr = MTAR_ESUCCESS;
+
+	// Open archive for reading.
+	mtar_open(&tar, fname, "r");
+
+	// Get the manifest from the archive.
+	mterr = mtar_find(&tar, PECAN_MANIFEST_FILE, &header);
+	if (mterr != MTAR_ESUCCESS) {
+		err = PECAN_ERR_FILE_IO;
+		// TODO: Set error string.
+		goto cleanup;
+	}
+
+	// Parse the manifest.
+	contents = (char *)realloc(contents, header.size + 1);
+	mtar_read_data(&tar, contents, header.size);
+	err = parse_attributes(part, PECAN_MANIFEST, contents);
+	if (err)
+		goto cleanup;
+
+	// Get the parameters from the archive.
+	mterr = mtar_find(&tar, PECAN_PARAM_FILE, &header);
+	if (mterr != MTAR_ESUCCESS) {
+		err = PECAN_ERR_FILE_IO;
+		// TODO: Set error string.
+		goto cleanup;
+	}
+
+	// Parse the parameters.
+	contents = (char *)realloc(contents, header.size + 1);
+	mtar_read_data(&tar, contents, header.size);
+	err = parse_attributes(part, PECAN_PARAMETERS, contents);
+	if (err)
+		goto cleanup;
+
+cleanup:
+	// Clean up our mess.
+	free(contents);
+	contents = NULL;
+	mtar_close(&tar);
+	return err;
 }
 
 /**
