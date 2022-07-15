@@ -98,7 +98,30 @@ cleanup:
  *               PECAN_ERR_FILE_IO if there were errors while trying to write.
  */
 pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
-	return PECAN_ERR_NOT_IMPLEMENTED;
+	size_t clen;
+	mtar_t tar;
+	char *contents = NULL;
+	pecan_err_t err = PECAN_OK;
+	int mterr = MTAR_ESUCCESS;
+
+	// Open archive for writing.
+	mtar_open(&tar, fname, "w");
+
+	// Write attributes to the archive.
+	clen = attr_get_file(part->attribs, &contents);
+	mtar_write_file_header(&tar, PECAN_MANIFEST_FILE, clen);
+	mtar_write_data(&tar, contents, clen);
+	free(contents);
+	clen = attr_get_file(part->params, &contents);
+	mtar_write_file_header(&tar, PECAN_PARAM_FILE, clen);
+	mtar_write_data(&tar, contents, clen);
+	free(contents);
+
+	// Finalize and close the archive.
+	mtar_finalize(&tar);
+	mtar_close(&tar);
+
+	return err;
 }
 
 /**

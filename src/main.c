@@ -12,14 +12,31 @@
 #include "pecan.h"
 #include "fileutils.h"
 
+// Private function prototypes.
+pecan_err_t test_read_unpacked(void);
+pecan_err_t test_read_packed(void);
+
 /**
  * Test program main entry point.
- * 
+ *
  * @param  argc Number of command line arguments passed to us.
  * @param  argv Command line arguments.
  * @return      0 on success.
  */
 int main(int argc, char **argv) {
+	pecan_err_t err;
+
+	// Perform some basic tests.
+	//printf("********************* Read Unpacked *********************\n");
+	//err = test_read_unpacked();
+	printf("\n********************* Read Packed *********************\n");
+	err = test_read_packed();
+
+	//pecan_write(&part, "example/example_our.tar");
+	return err;
+}
+
+pecan_err_t test_read_unpacked(void) {
 	pecan_err_t err;
 	pecan_archive_t part;
 	size_t idx;
@@ -29,6 +46,40 @@ int main(int argc, char **argv) {
 
 	// Read an unpacked component for testing.
 	err = pecan_unpacked_read_dir(&part, "example");
+	if (err)
+		goto cleanup;
+
+	// Print out its attributes.
+	printf("=============== Manifest [%zu] ===============\n",
+		   pecan_get_attr_len(&part, PECAN_MANIFEST));
+	for (idx = 0; idx < pecan_get_attr_len(&part, PECAN_MANIFEST); idx++) {
+		pecan_print_attr(*pecan_get_attr_idx(&part, PECAN_MANIFEST, idx));
+		printf("\n");
+	}
+
+	// Print out its attributes.
+	printf("\n=============== Parameters [%zu] ===============\n",
+		   pecan_get_attr_len(&part, PECAN_PARAMETERS));
+	for (idx = 0; idx < pecan_get_attr_len(&part, PECAN_PARAMETERS); idx++) {
+		pecan_print_attr(*pecan_get_attr_idx(&part, PECAN_PARAMETERS, idx));
+		printf("\n");
+	}
+
+cleanup:
+	pecan_free(&part);
+	return err;
+}
+
+pecan_err_t test_read_packed(void) {
+	pecan_err_t err;
+	pecan_archive_t part;
+	size_t idx;
+
+	// Initialize the archive.
+	pecan_init(&part);
+
+	// Read an unpacked component for testing.
+	err = pecan_read(&part, "example/example_our.tar");
 	if (err)
 		goto cleanup;
 
