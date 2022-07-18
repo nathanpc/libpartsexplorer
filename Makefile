@@ -24,7 +24,7 @@ SOURCES  += $(addprefix $(SRCDIR)/, $(SRCNAMES))
 OBJECTS  := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
 OBJECTS  += $(BUILDDIR)/microtar.o
 
-.PHONY: all compile run test debug memcheck clean
+.PHONY: all compile run test dbgcompile debug memcheck clean
 all: compile
 
 compile: $(BUILDDIR)/stamp $(TARGET)
@@ -45,8 +45,10 @@ $(BUILDDIR)/stamp:
 
 run: test
 
-debug: CFLAGS += -g3 -DDEBUG
-debug: clean $(EXETARGET)
+dbgcompile: CFLAGS += -g3 -DDEBUG
+dbgcompile: clean $(EXETARGET)
+
+debug: dbgcompile
 	$(GDB) $(EXETARGET)
 
 memcheck: CFLAGS += -g3 -DDEBUG -DMEMCHECK
