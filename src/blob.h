@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+#include <microtar.h>
 #include <stdlib.h>
 
 // Blob type definition.
@@ -25,6 +26,7 @@ void blob_init(pecan_blob_t *blob);
 
 // Reading
 size_t blob_slurp(pecan_blob_t *blob, const char *fpath);
+int blob_tar_read(pecan_blob_t *blob, mtar_t *tar, mtar_header_t header);
 
 // Cleanup
 void blob_free(pecan_blob_t *blob);

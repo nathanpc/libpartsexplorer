@@ -56,8 +56,28 @@ size_t blob_slurp(pecan_blob_t *blob, const char *fpath) {
 }
 
 /**
+ * Slurps a blob from a tar file that has already been seeked to the file that
+ * we want to slurp.
+ *
+ * @param  blob   Blob to get the contents of the file into.
+ * @param  tar    TAR file object.
+ * @param  header TAR file header with information about the seeked file.
+ * @return        Microtar error code.
+ */
+int blob_tar_read(pecan_blob_t *blob, mtar_t *tar, mtar_header_t header) {
+	// Allocate the space to read the file into.
+	blob->data = realloc(blob->data, header.size);
+	if (blob->data == NULL)
+		return MTAR_EFAILURE;
+
+	// Read the file into the blob.
+	blob->len = header.size;
+	return mtar_read_data(tar, blob->data, header.size);
+}
+
+/**
  * Cleans up the mess left behind by a blob object.
- * 
+ *
  * @param blob Blob object to be freed.
  */
 void blob_free(pecan_blob_t *blob) {
