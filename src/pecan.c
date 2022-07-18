@@ -91,7 +91,7 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	mterr = mtar_open(&tar, fname, "w");
 	HANDLE_MTAR_ERR(mterr);
 
-	// Write attributes to the archive.
+	// Write manifest to the archive.
 	clen = attr_get_file(part->attribs, &contents);
 	mtar_write_file_header(&tar, PECAN_MANIFEST_FILE, clen);
 	HANDLE_MTAR_ERR(mterr);
@@ -99,6 +99,8 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	HANDLE_MTAR_ERR(mterr);
 	free(contents);
 	contents = NULL;
+
+	// Write parameters to the archive.
 	clen = attr_get_file(part->params, &contents);
 	mtar_write_file_header(&tar, PECAN_PARAM_FILE, clen);
 	HANDLE_MTAR_ERR(mterr);
@@ -106,6 +108,22 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	HANDLE_MTAR_ERR(mterr);
 	free(contents);
 	contents = NULL;
+
+	// Write component image to the archive.
+	if (part->image.len > 0) {
+		mtar_write_file_header(&tar, PECAN_IMAGE_FILE, part->image.len);
+		HANDLE_MTAR_ERR(mterr);
+		mtar_write_data(&tar, part->image.data, part->image.len);
+		HANDLE_MTAR_ERR(mterr);
+	}
+
+	// Write component datasheet to the archive.
+	if (part->datasheet.len > 0) {
+		mtar_write_file_header(&tar, PECAN_IMAGE_FILE, part->datasheet.len);
+		HANDLE_MTAR_ERR(mterr);
+		mtar_write_data(&tar, part->datasheet.data, part->datasheet.len);
+		HANDLE_MTAR_ERR(mterr);
+	}
 
 	// Finalize and close the archive.
 	mtar_finalize(&tar);

@@ -29,7 +29,6 @@ int main(int argc, char **argv) {
 	// Perform some basic tests.
 	printf("********************* Read Unpacked *********************\n");
 	err = test_read_unpacked();
-	// pecan_write(&part, "example/example.tar");
 	printf("\n********************* Read Packed *********************\n");
 	err = test_read_packed();
 
@@ -71,6 +70,9 @@ pecan_err_t test_read_unpacked(void) {
 	printf("\n=============== Blobs ===============\n");
 	printf("Image: %zu bytes\n", part.image.len);
 	printf("Datasheet: %zu bytes\n", part.datasheet.len);
+
+	// Write it out just for a simple test.
+	pecan_write(&part, "example/example.tar");
 
 cleanup:
 	if (err)
