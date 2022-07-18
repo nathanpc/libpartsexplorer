@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+#include <stdarg.h>
+
 // Decorate the error message with more information.
 #ifdef DEBUG
 #	define STRINGIZE(x) STRINGIZE_WRAPPER(x)
@@ -24,6 +26,7 @@ extern "C" {
 // Operations
 void err_init(void);
 void err_set_msg(const char *msg);
+void err_format_msg(const char *format, ...);
 void err_free(void);
 
 // Inspections

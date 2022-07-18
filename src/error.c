@@ -35,6 +35,30 @@ void err_set_msg(const char *msg) {
 }
 
 /**
+ * Sets the error message that the user can later recall using a syntax akin to
+ * printf.
+ *
+ * @param format Format string just like in printf.
+ * @param ...    Things to place inside the formatted string.
+ */
+void err_format_msg(const char *format, ...) {
+	size_t len;
+	va_list args;
+
+	// Allocate enough space for our message.
+	va_start(args, format);
+	len = vsnprintf(NULL, 0, format, args);
+	va_end(args);
+	pecan_err_msg_buf = (char *)realloc(pecan_err_msg_buf,
+										(len + 1) * sizeof(char));
+
+	// Copy our formatted message.
+	va_start(args, format);
+	vsprintf(pecan_err_msg_buf, format, args);
+	va_end(args);
+}
+
+/**
  * Cleans up the mess left behind by the error message buffer.
  */
 void err_free(void) {
