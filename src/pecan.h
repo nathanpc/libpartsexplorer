@@ -53,19 +53,22 @@ typedef struct {
 // Initialization
 PECAN_EXPORTS pecan_err_t pecan_init(pecan_archive_t *part);
 
-// Archive Read and Write
-PECAN_EXPORTS pecan_err_t pecan_read(pecan_archive_t *part, const char *fname);
-PECAN_EXPORTS pecan_err_t pecan_write(pecan_archive_t *part, const char *fname);
+// Generic Archive Read
+PECAN_EXPORTS pecan_err_t pecan_read(pecan_archive_t *part, const char *fpath);
 
-// Unpacked Archive
-PECAN_EXPORTS pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part,
-												  const char *path);
+// Specific Read and Write
+PECAN_EXPORTS pecan_err_t pecan_read_packed(pecan_archive_t *part,
+											const char *fname);
+PECAN_EXPORTS pecan_err_t pecan_read_unpacked(pecan_archive_t *part,
+											  const char *path);
+PECAN_EXPORTS pecan_err_t pecan_write(pecan_archive_t *part, const char *fname);
 
 // Attributes
 PECAN_EXPORTS void pecan_add_attr(pecan_archive_t *part, pecan_attr_type_t type,
 								  pecan_attr_t attr);
-PECAN_EXPORTS void pecan_add_attr_str(pecan_archive_t *part, pecan_attr_type_t type,
-									  const char *name, const char *value);
+PECAN_EXPORTS void pecan_add_attr_str(pecan_archive_t *part,
+									  pecan_attr_type_t type, const char *name,
+									  const char *value);
 PECAN_EXPORTS void pecan_set_attr(pecan_archive_t *part, pecan_attr_type_t type,
 								  const char *name, const char *value);
 PECAN_EXPORTS pecan_attr_t *pecan_get_attr(pecan_archive_t *part,

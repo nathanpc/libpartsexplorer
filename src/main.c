@@ -45,7 +45,7 @@ pecan_err_t test_read_unpacked(void) {
 	pecan_init(&part);
 
 	// Read an unpacked component for testing.
-	err = pecan_unpacked_read_dir(&part, "example");
+	err = pecan_read_unpacked(&part, "example");
 	if (err)
 		goto cleanup;
 
@@ -79,7 +79,7 @@ pecan_err_t test_read_packed(void) {
 	pecan_init(&part);
 
 	// Read an unpacked component for testing.
-	err = pecan_read(&part, "example/example_our.tar");
+	err = pecan_read(&part, "example/example.tar");
 	if (err)
 		goto cleanup;
 

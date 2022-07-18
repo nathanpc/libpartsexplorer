@@ -34,58 +34,24 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
  * Reads an component archive and populates the archive structure.
  *
  * @param  part  Empty component archive to be populated.
- * @param  fname Path to the component archive file.
+ * @param  fpath Path to the component archive (file or folder).
  * @return       PECAN_OK if the operation was successful.
  *               PECAN_ERR_PATH_NOT_FOUND if the specified path wasn't found.
  *               PECAN_ERR_FILE_IO if the archive was corrupted.
  *               PECAN_ERR_PARSE if there were parsing errors.
  */
-pecan_err_t pecan_read(pecan_archive_t *part, const char *fname) {
-	mtar_t tar;
-	mtar_header_t header;
-	char *contents = NULL;
-	pecan_err_t err = PECAN_OK;
-	int mterr = MTAR_ESUCCESS;
-
-	// Open archive for reading.
-	mtar_open(&tar, fname, "r");
-
-	// Get the manifest from the archive.
-	mterr = mtar_find(&tar, PECAN_MANIFEST_FILE, &header);
-	if (mterr != MTAR_ESUCCESS) {
-		err = PECAN_ERR_FILE_IO;
-		// TODO: Set error string.
-		goto cleanup;
+pecan_err_t pecan_read(pecan_archive_t *part, const char *fpath) {
+	// Check if we even have something there.
+	if (!file_exists(fpath)) {
+		// TODO: Set error message.
+		return PECAN_ERR_PATH_NOT_FOUND;
 	}
 
-	// Parse the manifest.
-	contents = (char *)realloc(contents, header.size + 1);
-	mtar_read_data(&tar, contents, header.size);
-	err = parse_attributes(part, PECAN_MANIFEST, contents);
-	if (err)
-		goto cleanup;
-
-	// Get the parameters from the archive.
-	mterr = mtar_find(&tar, PECAN_PARAM_FILE, &header);
-	if (mterr != MTAR_ESUCCESS) {
-		err = PECAN_ERR_FILE_IO;
-		// TODO: Set error string.
-		goto cleanup;
-	}
-
-	// Parse the parameters.
-	contents = (char *)realloc(contents, header.size + 1);
-	mtar_read_data(&tar, contents, header.size);
-	err = parse_attributes(part, PECAN_PARAMETERS, contents);
-	if (err)
-		goto cleanup;
-
-cleanup:
-	// Clean up our mess.
-	free(contents);
-	contents = NULL;
-	mtar_close(&tar);
-	return err;
+	// Are we dealing with an unpacked archive?
+	if (is_dir(fpath))
+		return pecan_read_unpacked(part, fpath);
+	
+	return pecan_read_packed(part, fpath);
 }
 
 /**
@@ -290,6 +256,64 @@ size_t pecan_get_attr_len(pecan_archive_t *part, pecan_attr_type_t type) {
 }
 
 /**
+ * Reads an component archive and populates the archive structure.
+ *
+ * @param  part  Empty component archive to be populated.
+ * @param  fname Path to the component archive file.
+ * @return       PECAN_OK if the operation was successful.
+ *               PECAN_ERR_PATH_NOT_FOUND if the specified path wasn't found.
+ *               PECAN_ERR_FILE_IO if the archive was corrupted.
+ *               PECAN_ERR_PARSE if there were parsing errors.
+ */
+pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
+	mtar_t tar;
+	mtar_header_t header;
+	char *contents = NULL;
+	pecan_err_t err = PECAN_OK;
+	int mterr = MTAR_ESUCCESS;
+
+	// Open archive for reading.
+	mtar_open(&tar, fname, "r");
+
+	// Get the manifest from the archive.
+	mterr = mtar_find(&tar, PECAN_MANIFEST_FILE, &header);
+	if (mterr != MTAR_ESUCCESS) {
+		err = PECAN_ERR_FILE_IO;
+		// TODO: Set error string.
+		goto cleanup;
+	}
+
+	// Parse the manifest.
+	contents = (char *)realloc(contents, header.size + 1);
+	mtar_read_data(&tar, contents, header.size);
+	err = parse_attributes(part, PECAN_MANIFEST, contents);
+	if (err)
+		goto cleanup;
+
+	// Get the parameters from the archive.
+	mterr = mtar_find(&tar, PECAN_PARAM_FILE, &header);
+	if (mterr != MTAR_ESUCCESS) {
+		err = PECAN_ERR_FILE_IO;
+		// TODO: Set error string.
+		goto cleanup;
+	}
+
+	// Parse the parameters.
+	contents = (char *)realloc(contents, header.size + 1);
+	mtar_read_data(&tar, contents, header.size);
+	err = parse_attributes(part, PECAN_PARAMETERS, contents);
+	if (err)
+		goto cleanup;
+
+cleanup:
+	// Clean up our mess.
+	free(contents);
+	contents = NULL;
+	mtar_close(&tar);
+	return err;
+}
+
+/**
  * Reads an unpacked component archive and populates the archive structure.
  *
  * @param  part Empty component archive to be populated.
@@ -298,7 +322,7 @@ size_t pecan_get_attr_len(pecan_archive_t *part, pecan_attr_type_t type) {
  *              PECAN_ERR_PATH_NOT_FOUND if the specified path wasn't found.
  *              PECAN_ERR_PARSE if there were parsing errors.
  */
-pecan_err_t pecan_unpacked_read_dir(pecan_archive_t *part, const char *path) {
+pecan_err_t pecan_read_unpacked(pecan_archive_t *part, const char *path) {
 	char *fpath;
 	char *contents;
 	pecan_err_t err = PECAN_OK;
