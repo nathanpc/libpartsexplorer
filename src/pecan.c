@@ -119,7 +119,7 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 
 	// Write component datasheet to the archive.
 	if (part->datasheet.len > 0) {
-		mtar_write_file_header(&tar, PECAN_IMAGE_FILE, part->datasheet.len);
+		mtar_write_file_header(&tar, PECAN_DATASHEET_FILE, part->datasheet.len);
 		HANDLE_MTAR_ERR(mterr);
 		mtar_write_data(&tar, part->datasheet.data, part->datasheet.len);
 		HANDLE_MTAR_ERR(mterr);
@@ -339,6 +339,7 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	// Parse the manifest.
 	contents = (char *)realloc(contents, header.size + 1);
 	mtar_read_data(&tar, contents, header.size);
+	HANDLE_MTAR_ERR(mterr);
 	err = parse_attributes(part, PECAN_MANIFEST, contents);
 	if (err)
 		goto cleanup;
@@ -354,6 +355,7 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	// Parse the parameters.
 	contents = (char *)realloc(contents, header.size + 1);
 	mtar_read_data(&tar, contents, header.size);
+	HANDLE_MTAR_ERR(mterr);
 	err = parse_attributes(part, PECAN_PARAMETERS, contents);
 	if (err)
 		goto cleanup;
@@ -361,13 +363,15 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	// Get the component image from the archive.
 	mterr = mtar_find(&tar, PECAN_IMAGE_FILE, &header);
 	if (mterr == MTAR_ESUCCESS) {
-		// TODO: Implement
+		mterr = blob_tar_read(&part->image, &tar, header);
+		HANDLE_MTAR_ERR(mterr);
 	}
 
 	// Get the component datasheet from the archive.
 	mterr = mtar_find(&tar, PECAN_DATASHEET_FILE, &header);
 	if (mterr == MTAR_ESUCCESS) {
-		// TODO: Implement
+		mterr = blob_tar_read(&part->datasheet, &tar, header);
+		HANDLE_MTAR_ERR(mterr);
 	}
 
 cleanup:
