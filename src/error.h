@@ -14,7 +14,9 @@ extern "C" {
 
 // Decorate the error message with more information.
 #ifdef DEBUG
-#	define EMSG(msg) msg " [" __FILE__ ":" __LINE__ "]"
+#	define STRINGIZE(x) STRINGIZE_WRAPPER(x)
+#	define STRINGIZE_WRAPPER(x) #x
+#	define EMSG(msg) msg " [" __FILE__ ":" STRINGIZE(__LINE__) "]"
 #else
 #	define EMSG(msg) msg
 #endif /* DEBUG */

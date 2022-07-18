@@ -48,13 +48,13 @@ void err_free(void) {
  *
  * @return Last error message string.
  */
-const char *pecan_err_msg(void) {
+const char *err_get_msg(void) {
 	return err_get_msg();
 }
 
 /**
  * Prints the last error message thrown by the library.
  */
-void pecan_print_error(void) {
+void err_print_msg(void) {
 	printf("ERROR: %s\n", pecan_err_msg_buf);
 }
