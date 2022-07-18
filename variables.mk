@@ -22,5 +22,5 @@ ifeq ($(PLATFORM), Darwin)
 endif
 
 # Flags
-CFLAGS  = -Wall -pedantic
+CFLAGS  = -Wall -Wextra -pedantic
 LDFLAGS =
