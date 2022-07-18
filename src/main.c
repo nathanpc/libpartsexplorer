@@ -42,7 +42,9 @@ pecan_err_t test_read_unpacked(void) {
 	size_t idx;
 
 	// Initialize the archive.
-	pecan_init(&part);
+	err = pecan_init(&part);
+	if (err)
+		goto cleanup;
 
 	// Read an unpacked component for testing.
 	err = pecan_read_unpacked(&part, "example");
@@ -66,6 +68,8 @@ pecan_err_t test_read_unpacked(void) {
 	}
 
 cleanup:
+	if (err)
+		pecan_print_error();
 	pecan_free(&part);
 	return err;
 }
@@ -76,7 +80,9 @@ pecan_err_t test_read_packed(void) {
 	size_t idx;
 
 	// Initialize the archive.
-	pecan_init(&part);
+	err = pecan_init(&part);
+	if (err)
+		goto cleanup;
 
 	// Read an unpacked component for testing.
 	err = pecan_read(&part, "example/example.tar");
@@ -100,6 +106,8 @@ pecan_err_t test_read_packed(void) {
 	}
 
 cleanup:
+	if (err)
+		pecan_print_error();
 	pecan_free(&part);
 	return err;
 }

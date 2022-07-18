@@ -83,6 +83,10 @@ PECAN_EXPORTS size_t pecan_get_attr_len(pecan_archive_t *part,
 // Clean up
 PECAN_EXPORTS void pecan_free(pecan_archive_t *part);
 
+// Error Handling
+PECAN_EXPORTS const char *pecan_err_msg(void);
+PECAN_EXPORTS void pecan_print_error(void);
+
 // Debugging
 PECAN_EXPORTS void pecan_print_attr(pecan_attr_t attr);
 

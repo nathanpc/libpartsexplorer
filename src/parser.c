@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "attribute.h"
+#include "error.h"
 
 // Parsing stages enumerator.
 typedef enum {

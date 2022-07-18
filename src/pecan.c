@@ -14,6 +14,7 @@
 
 #include "fileutils.h"
 #include "parser.h"
+#include "error.h"
 
 /**
  * Initializes an component structure.
@@ -22,6 +23,9 @@
  * @return      PECAN_OK if the operation was successful.
  */
 pecan_err_t pecan_init(pecan_archive_t *part) {
+	// Initialize the error message stuff.
+	err_init();
+
 	// NULL out everything.
 	part->fname = NULL;
 	part->attribs = NULL;
@@ -43,7 +47,7 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
 pecan_err_t pecan_read(pecan_archive_t *part, const char *fpath) {
 	// Check if we even have something there.
 	if (!file_exists(fpath)) {
-		// TODO: Set error message.
+		err_set_msg(EMSG("Specified archive path not found"));
 		return PECAN_ERR_PATH_NOT_FOUND;
 	}
 
@@ -103,6 +107,9 @@ void pecan_free(pecan_archive_t *part) {
 	// Free up all of our attributes.
 	cvector_free_each_and_free(part->attribs, attr_free);
 	cvector_free_each_and_free(part->params, attr_free);
+
+	// Clean up our error message stuff.
+	err_free();
 }
 
 /**
@@ -278,8 +285,8 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	// Get the manifest from the archive.
 	mterr = mtar_find(&tar, PECAN_MANIFEST_FILE, &header);
 	if (mterr != MTAR_ESUCCESS) {
+		err_set_msg(EMSG("Couldn't get the manifest file from the archive"));
 		err = PECAN_ERR_FILE_IO;
-		// TODO: Set error string.
 		goto cleanup;
 	}
 
@@ -293,8 +300,8 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	// Get the parameters from the archive.
 	mterr = mtar_find(&tar, PECAN_PARAM_FILE, &header);
 	if (mterr != MTAR_ESUCCESS) {
+		err_set_msg(EMSG("Couldn't get the parameters file from the archive"));
 		err = PECAN_ERR_FILE_IO;
-		// TODO: Set error string.
 		goto cleanup;
 	}
 
@@ -332,8 +339,10 @@ pecan_err_t pecan_read_unpacked(pecan_archive_t *part, const char *path) {
 	contents = slurp_file(fpath);
 	free(fpath);
 	fpath = NULL;
-	if (contents == NULL)
+	if (contents == NULL) {
+		err_set_msg(EMSG("Couldn't slurp the contents of the manifest file"));
 		return PECAN_ERR_PATH_NOT_FOUND;
+	}
 	
 	// Parse the manifest attributes.
 	err = parse_attributes(part, PECAN_MANIFEST, contents);
@@ -347,8 +356,10 @@ pecan_err_t pecan_read_unpacked(pecan_archive_t *part, const char *path) {
 	contents = slurp_file(fpath);
 	free(fpath);
 	fpath = NULL;
-	if (contents == NULL)
+	if (contents == NULL) {
+		err_set_msg(EMSG("Couldn't slurp the contents of the parameters file"));
 		return PECAN_ERR_PATH_NOT_FOUND;
+	}
 
 	// Parse the attributes.
 	err = parse_attributes(part, PECAN_PARAMETERS, contents);
@@ -359,8 +370,24 @@ pecan_err_t pecan_read_unpacked(pecan_archive_t *part, const char *path) {
 }
 
 /**
- * Pretty prints the contents of an attribute for debugging purposes.
+ * Gets the last error message thrown by the library.
  * 
+ * @return Last error message string.
+ */
+const char *pecan_err_msg(void) {
+	return err_get_msg();
+}
+
+/**
+ * Prints the last error message thrown by the library.
+ */
+void pecan_print_error(void) {
+	err_print_msg();
+}
+
+/**
+ * Pretty prints the contents of an attribute for debugging purposes.
+ *
  * @param attr Attribute to be printed.
  */
 void pecan_print_attr(pecan_attr_t attr) {
