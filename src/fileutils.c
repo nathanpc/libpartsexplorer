@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 /**
@@ -20,6 +21,23 @@
  */
 bool file_exists(const char *fpath) {
 	return access(fpath, F_OK) != -1;
+}
+
+/**
+ * Checks if a path represents an directory or a symlink to one.
+ *
+ * @param  path Path to be checked.
+ * @return      TRUE if the path represents an existing directory.
+ */
+bool is_dir(const char *path) {
+	struct stat sb;
+
+	// Make sure that we can stat the path.
+	if (stat(path, &sb) < 0)
+		return false;
+
+	// Check if it's a directory.
+	return S_ISDIR(sb.st_mode);
 }
 
 /**

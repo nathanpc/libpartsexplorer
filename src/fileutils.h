@@ -18,6 +18,7 @@ extern "C" {
 #include <sys/types.h>
 
 // Checking.
+bool is_dir(const char *path);
 bool file_exists(const char *fpath);
 bool file_ext_match(const char *fpath, const char *ext);
 
