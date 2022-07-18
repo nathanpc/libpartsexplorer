@@ -16,6 +16,16 @@
 #include "parser.h"
 #include "error.h"
 
+// Handle microtar errors.
+#define HANDLE_MTAR_ERR(mterr)                                                \
+	do {                                                                      \
+		if (mterr) {                                                          \
+			err_format_msg(EMSG("microtar error: %s"), mtar_strerror(mterr)); \
+			err = PECAN_ERR_FILE_IO;                                          \
+			goto cleanup;                                                     \
+		}                                                                     \
+	} while (0)
+
 /**
  * Initializes an component structure.
  *
@@ -49,7 +59,8 @@ pecan_err_t pecan_init(pecan_archive_t *part) {
 pecan_err_t pecan_read(pecan_archive_t *part, const char *fpath) {
 	// Check if we even have something there.
 	if (!file_exists(fpath)) {
-		err_set_msg(EMSG("Specified archive path not found"));
+		err_format_msg(EMSG("Specified archive path '%s' not found"),
+			fpath);
 		return PECAN_ERR_PATH_NOT_FOUND;
 	}
 
@@ -77,22 +88,31 @@ pecan_err_t pecan_write(pecan_archive_t *part, const char *fname) {
 	int mterr = MTAR_ESUCCESS;
 
 	// Open archive for writing.
-	mtar_open(&tar, fname, "w");
+	mterr = mtar_open(&tar, fname, "w");
+	HANDLE_MTAR_ERR(mterr);
 
 	// Write attributes to the archive.
 	clen = attr_get_file(part->attribs, &contents);
 	mtar_write_file_header(&tar, PECAN_MANIFEST_FILE, clen);
+	HANDLE_MTAR_ERR(mterr);
 	mtar_write_data(&tar, contents, clen);
+	HANDLE_MTAR_ERR(mterr);
 	free(contents);
+	contents = NULL;
 	clen = attr_get_file(part->params, &contents);
 	mtar_write_file_header(&tar, PECAN_PARAM_FILE, clen);
+	HANDLE_MTAR_ERR(mterr);
 	mtar_write_data(&tar, contents, clen);
+	HANDLE_MTAR_ERR(mterr);
 	free(contents);
+	contents = NULL;
 
 	// Finalize and close the archive.
 	mtar_finalize(&tar);
+cleanup:
 	mtar_close(&tar);
 
+	free(contents);
 	return err;
 }
 
