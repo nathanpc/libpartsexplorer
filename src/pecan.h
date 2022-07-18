@@ -16,6 +16,7 @@ extern "C" {
 #include <microtar.h>
 
 #include "attribute.h"
+#include "blob.h"
 
 // Library export definition.
 #define PECAN_EXPORTS extern
@@ -48,6 +49,8 @@ typedef struct {
 	char *fname;
 	pecan_attr_arr_t attribs;
 	pecan_attr_arr_t params;
+	pecan_blob_t image;
+	pecan_blob_t datasheet;
 } pecan_archive_t;
 
 // Initialization

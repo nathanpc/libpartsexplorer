@@ -19,7 +19,7 @@ EXAMPLEDIR := example
 TARGET    = $(BUILDDIR)/lib$(PROJECT).$(LIBEXT)
 EXETARGET = $(BUILDDIR)/test
 CFLAGS   += -I$(EXTLIBDIR)/cvector -I$(EXTLIBDIR)/microtar/src
-SRCNAMES += pecan.c attribute.c parser.c fileutils.c error.c
+SRCNAMES += pecan.c attribute.c parser.c blob.c fileutils.c error.c
 SOURCES  += $(addprefix $(SRCDIR)/, $(SRCNAMES))
 OBJECTS  := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
 OBJECTS  += $(BUILDDIR)/microtar.o
@@ -51,8 +51,8 @@ dbgcompile: clean $(EXETARGET)
 debug: dbgcompile
 	$(GDB) $(EXETARGET)
 
-memcheck: CFLAGS += -g3 -DDEBUG -DMEMCHECK
-memcheck: clean $(EXETARGET)
+memcheck: CFLAGS += -DMEMCHECK
+memcheck: dbgcompile
 	valgrind --tool=memcheck --leak-check=yes --show-leak-kinds=all \
 		--track-origins=yes --log-file=$(BUILDDIR)/valgrind.log $(EXETARGET)
 	cat $(BUILDDIR)/valgrind.log

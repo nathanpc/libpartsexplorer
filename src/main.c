@@ -27,12 +27,12 @@ int main(int argc, char **argv) {
 	pecan_err_t err;
 
 	// Perform some basic tests.
-	//printf("********************* Read Unpacked *********************\n");
-	//err = test_read_unpacked();
+	printf("********************* Read Unpacked *********************\n");
+	err = test_read_unpacked();
+	// pecan_write(&part, "example/example.tar");
 	printf("\n********************* Read Packed *********************\n");
 	err = test_read_packed();
 
-	//pecan_write(&part, "example/example_our.tar");
 	return err;
 }
 
@@ -66,6 +66,11 @@ pecan_err_t test_read_unpacked(void) {
 		pecan_print_attr(*pecan_get_attr_idx(&part, PECAN_PARAMETERS, idx));
 		printf("\n");
 	}
+
+	// Print out the blobs information.
+	printf("\n=============== Blobs ===============\n");
+	printf("Image: %zu bytes\n", part.image.len);
+	printf("Datasheet: %zu bytes\n", part.datasheet.len);
 
 cleanup:
 	if (err)
@@ -104,6 +109,11 @@ pecan_err_t test_read_packed(void) {
 		pecan_print_attr(*pecan_get_attr_idx(&part, PECAN_PARAMETERS, idx));
 		printf("\n");
 	}
+
+	// Print out the blobs information.
+	printf("\n=============== Blobs ===============\n");
+	printf("Image: %zu bytes\n", part.image.len);
+	printf("Datasheet: %zu bytes\n", part.datasheet.len);
 
 cleanup:
 	if (err)

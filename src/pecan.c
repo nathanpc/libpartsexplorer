@@ -23,13 +23,15 @@
  * @return      PECAN_OK if the operation was successful.
  */
 pecan_err_t pecan_init(pecan_archive_t *part) {
-	// Initialize the error message stuff.
-	err_init();
-
 	// NULL out everything.
 	part->fname = NULL;
 	part->attribs = NULL;
 	part->params = NULL;
+
+	// Initialize what needs to be initialized.
+	err_init();
+	blob_init(&part->image);
+	blob_init(&part->datasheet);
 
 	return PECAN_OK;
 }
@@ -107,6 +109,10 @@ void pecan_free(pecan_archive_t *part) {
 	// Free up all of our attributes.
 	cvector_free_each_and_free(part->attribs, attr_free);
 	cvector_free_each_and_free(part->params, attr_free);
+
+	// Free up our blobs.
+	blob_free(&part->image);
+	blob_free(&part->datasheet);
 
 	// Clean up our error message stuff.
 	err_free();
@@ -282,6 +288,8 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	// Open archive for reading.
 	mtar_open(&tar, fname, "r");
 
+	// TODO: Use mtar_next()
+
 	// Get the manifest from the archive.
 	mterr = mtar_find(&tar, PECAN_MANIFEST_FILE, &header);
 	if (mterr != MTAR_ESUCCESS) {
@@ -311,6 +319,18 @@ pecan_err_t pecan_read_packed(pecan_archive_t *part, const char *fname) {
 	err = parse_attributes(part, PECAN_PARAMETERS, contents);
 	if (err)
 		goto cleanup;
+
+	// Get the component image from the archive.
+	mterr = mtar_find(&tar, PECAN_IMAGE_FILE, &header);
+	if (mterr == MTAR_ESUCCESS) {
+		// TODO: Implement
+	}
+
+	// Get the component datasheet from the archive.
+	mterr = mtar_find(&tar, PECAN_DATASHEET_FILE, &header);
+	if (mterr == MTAR_ESUCCESS) {
+		// TODO: Implement
+	}
 
 cleanup:
 	// Clean up our mess.
@@ -365,6 +385,28 @@ pecan_err_t pecan_read_unpacked(pecan_archive_t *part, const char *path) {
 	err = parse_attributes(part, PECAN_PARAMETERS, contents);
 	free(contents);
 	contents = NULL;
+
+	// Slurp the image file.
+	pathcat(2, &fpath, path, PECAN_IMAGE_FILE);
+	if (file_exists(fpath)) {
+		if (blob_slurp(&part->image, fpath) == 0L) {
+			err_set_msg(EMSG("Couldn't slurp the contents of the image file"));
+			return PECAN_ERR_FILE_IO;
+		}
+	}
+	free(fpath);
+	fpath = NULL;
+
+	// Slurp the datasheet file.
+	pathcat(2, &fpath, path, PECAN_DATASHEET_FILE);
+	if (file_exists(fpath)) {
+		if (blob_slurp(&part->datasheet, fpath) == 0L) {
+			err_set_msg(EMSG("Couldn't slurp the contents of the datasheet file"));
+			return PECAN_ERR_FILE_IO;
+		}
+	}
+	free(fpath);
+	fpath = NULL;
 
 	return err;
 }
