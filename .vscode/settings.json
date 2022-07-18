@@ -12,6 +12,11 @@
 			"cwd": "/home/nathan/dev/parts-explorer/build",
 			"binaryPath": "/home/nathan/dev/parts-explorer/build/test",
 			"binaryArgs": []
+		},
+		{
+			"cwd": "/home/nathan/dev/pecan/build",
+			"binaryPath": "/home/nathan/dev/pecan/build/test",
+			"binaryArgs": []
 		}
 	]
 }
