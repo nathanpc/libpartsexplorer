@@ -17,15 +17,15 @@ EXAMPLEDIR := example
 
 # Fragments
 TARGET    = $(BUILDDIR)/lib$(PROJECT).$(LIBEXT)
-EXETARGET = $(BUILDDIR)/test
+EXETARGET = $(BUILDDIR)/$(PROJECT)
 CFLAGS   += -I$(EXTLIBDIR)/cvector -I$(EXTLIBDIR)/microtar/src
 SRCNAMES += pecan.c attribute.c parser.c blob.c fileutils.c error.c
 SOURCES  += $(addprefix $(SRCDIR)/, $(SRCNAMES))
 OBJECTS  := $(patsubst $(SRCDIR)/%.c, $(BUILDDIR)/%.o, $(SOURCES))
 OBJECTS  += $(BUILDDIR)/microtar.o
 
-.PHONY: all compile run test dbgcompile debug memcheck clean
-all: compile
+.PHONY: all compile run exec dbgcompile debug memcheck clean
+all: $(EXETARGET)
 
 compile: $(BUILDDIR)/stamp $(TARGET)
 
@@ -39,11 +39,20 @@ $(BUILDDIR)/stamp:
 	$(MKDIR) $(@D)
 	$(TOUCH) $@
 
+$(EXETARGET): LDFLAGS += -L$(BUILDDIR)
+$(EXETARGET): LDLIBS += -l$(PROJECT)
+$(EXETARGET): $(BUILDDIR)/main.o
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+$(BUILDDIR)/main.o: compile $(SRCDIR)/main.c
+	$(CC) $(CFLAGS) -c $(SRCDIR)/main.c -o $@
+
 ###
 ### Auxiliary Targets
 ###
 
-run: test
+run: $(EXETARGET)
+	$(EXETARGET)
 
 dbgcompile: CFLAGS += -g3 -DDEBUG
 dbgcompile: clean $(EXETARGET)
@@ -66,18 +75,3 @@ clean:
 
 $(BUILDDIR)/microtar.o: $(EXTLIBDIR)/microtar/src/microtar.c
 	$(CC) $(CFLAGS) -c $< -o $@
-
-###
-### Library Test Program
-###
-
-test: $(EXETARGET)
-	$(EXETARGET)
-
-$(EXETARGET): LDFLAGS += -L$(BUILDDIR)
-$(EXETARGET): LDLIBS += -l$(PROJECT)
-$(EXETARGET): $(BUILDDIR)/main.o
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
-
-$(BUILDDIR)/main.o: compile $(SRCDIR)/main.c
-	$(CC) $(CFLAGS) -c $(SRCDIR)/main.c -o $@
