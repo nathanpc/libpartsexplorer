@@ -14,5 +14,15 @@
 			"binaryPath": "/home/nathan/dev/pecan/build/pecan",
 			"binaryArgs": []
 		}
+	],
+	"cSpell.userWords": [
+		"cvector",
+		"Datasheet",
+		"EFAILURE",
+		"EMSG",
+		"microtar",
+		"mtar",
+		"mterr",
+		"pathcat"
 	]
 }

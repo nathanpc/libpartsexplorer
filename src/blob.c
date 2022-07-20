@@ -24,7 +24,7 @@ void blob_init(pecan_blob_t *blob) {
  *
  * @param  blob  Blob to get the contents of the file into.
  * @param  fpath File to be read into the blob.
- * @return       Number of bytes read from the file or 0 if an error occured.
+ * @return       Number of bytes read from the file or 0 if an error occurred.
  */
 size_t blob_slurp(pecan_blob_t *blob, const char *fpath) {
 	FILE *fh;
@@ -56,13 +56,13 @@ size_t blob_slurp(pecan_blob_t *blob, const char *fpath) {
 }
 
 /**
- * Slurps a blob from a tar file that has already been seeked to the file that
+ * Slurps a blob from a tar file that has already been seek'd to the file that
  * we want to slurp.
  *
  * @param  blob   Blob to get the contents of the file into.
  * @param  tar    TAR file object.
- * @param  header TAR file header with information about the seeked file.
- * @return        Microtar error code.
+ * @param  header TAR file header with information about the seek'd file.
+ * @return        MicroTAR error code.
  */
 int blob_tar_read(pecan_blob_t *blob, mtar_t *tar, mtar_header_t header) {
 	// Allocate the space to read the file into.
