@@ -24,3 +24,15 @@ endif
 # Flags
 CFLAGS  = -Wall -Wextra -pedantic
 LDFLAGS =
+
+# Default toolkit for Linux.
+ifeq ($(PLATFORM), Linux)
+	BUILD_GTK := 3
+endif
+
+# GTK application.
+ifdef BUILD_GTK
+	CFLAGS += -DHAS_GUI -DUSE_GTK $(shell pkg-config --cflags gtk+-3.0)
+	LDLIBS += $(shell pkg-config --libs gtk+-3.0)
+endif
+

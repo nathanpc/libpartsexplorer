@@ -12,13 +12,18 @@
 #include <unistd.h>
 
 #include "pecan.h"
-#include "fileutils.h"
+#ifdef USE_GTK
+#	include "gtk/app.h"
+#endif
 
 // Command line options structure.
 typedef struct {
 	bool dump_contents;
 	char *output_file;
 	char *input_file;
+#ifdef HAS_GUI
+	bool show_window;
+#endif  /* HAS_GUI */
 } opts_t;
 
 // Global variables.
@@ -47,9 +52,12 @@ int main(int argc, char **argv) {
 	opterr = 0;
 	opts.dump_contents = false;
 	opts.output_file = NULL;
+#ifdef HAS_GUI
+	opts.show_window = true;
+#endif  /* HAS_GUI */
 
 	// Go through the command line options.
-	while ((c = getopt(argc, argv, "hdO:")) != -1) {
+	while ((c = getopt(argc, argv, "hdwO:")) != -1) {
 		switch (c) {
 			case 'h':
 				// Help the user with usage.
@@ -59,6 +67,12 @@ int main(int argc, char **argv) {
 				// Dump contents of the input archive.
 				opts.dump_contents = true;
 				break;
+#ifdef HAS_GUI
+			case 'w':
+				// Do not show the GUI application.
+				opts.show_window = false;
+				break;
+#endif  /* HAS_GUI */
 			case 'O':
 				// Set the output file.
 				opts.output_file = optarg;
@@ -115,6 +129,13 @@ int main(int argc, char **argv) {
 		if (err)
 			goto cleanup;
 	}
+
+#ifdef HAS_GUI
+	// Should we show our beautiful GUI application?
+	if (opts.show_window) {
+		app_main(argc, argv);
+	}
+#endif  /* HAS_GUI */
 
 cleanup:
 	if (err)
