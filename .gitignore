@@ -1,6 +1,9 @@
 # Testing Stuff
 example/
 
+# Backup and Temporary Files
+*~
+
 # Compilation Artifacts
 *.o
 *.so
