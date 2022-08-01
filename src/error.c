@@ -73,7 +73,7 @@ void err_free(void) {
  * @return Last error message string.
  */
 const char *err_get_msg(void) {
-	return err_get_msg();
+	return pecan_err_msg_buf;
 }
 
 /**
