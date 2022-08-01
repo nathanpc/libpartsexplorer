@@ -9,15 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void activate(GtkApplication* app, __attribute__((unused)) gpointer user_data) {
-	GtkWidget *window;
-
-	window = gtk_application_window_new(app);
-	gtk_window_set_title(GTK_WINDOW(window), "Pecan");
-	gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
-	gtk_widget_show_all(window);
-}
-
 /**
  * GTK application's main entry point.
  *
@@ -25,16 +16,28 @@ static void activate(GtkApplication* app, __attribute__((unused)) gpointer user_
  * @param  argv Command line arguments.
  * @return      0 on success.
  */
-int app_main(int argc, char **argv) {
-	GtkApplication *app;
-	int status;
+int app_main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv) {
+	GtkBuilder *builder;
+	GError *error = NULL;
 
-	// Initialize the GTK application.
-	app = gtk_application_new("com.innoveworkshop.pecan", G_APPLICATION_FLAGS_NONE);
-	g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-	status = g_application_run(G_APPLICATION(app), 1, argv);  // Ignore arguments.
-	g_object_unref(app);
+	// Initialize GTK.
+	gtk_init(NULL, NULL);
 
-	return status;
+	// Start building our GUI.
+	builder = gtk_builder_new();
+	if (gtk_builder_add_from_resource(builder, "/com/innoveworkshop/Pecan/main_window.glade", &error) == 0) {
+		g_printerr("Error loading Glade resource: %s\n", error->message);
+		g_clear_error(&error);
+		return 1;
+	}
+
+	// Attach a simple Quit signal handler to the main window.
+	GObject *window = gtk_builder_get_object(builder, "main_window");
+	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	gtk_widget_show_all(window);
+
+	// Run the main application loop.
+	gtk_main();
+	return 0;
 }
 

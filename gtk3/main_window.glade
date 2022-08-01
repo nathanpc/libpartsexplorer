@@ -40,18 +40,8 @@ Author: Nathan Campos
       <!-- column-name description -->
       <column type="gchararray"/>
     </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Test</col>
-        <col id="1" translatable="yes">Hello</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Another Thing Here</col>
-        <col id="1" translatable="yes">120mV</col>
-      </row>
-    </data>
   </object>
-  <object class="GtkApplicationWindow" id="mainwindow">
+  <object class="GtkApplicationWindow" id="main_window">
     <property name="can-focus">False</property>
     <property name="window-position">center-always</property>
     <child>
@@ -257,7 +247,7 @@ Author: Nathan Campos
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="model">store_attributes</property>
-            <property name="expander-column">type</property>
+            <property name="expander-column">col_type</property>
             <property name="reorderable">True</property>
             <property name="search-column">0</property>
             <property name="show-expanders">False</property>
@@ -267,23 +257,50 @@ Author: Nathan Campos
               <object class="GtkTreeSelection"/>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="type">
+              <object class="GtkTreeViewColumn" id="col_type">
                 <property name="resizable">True</property>
-                <property name="sizing">fixed</property>
                 <property name="min-width">100</property>
                 <property name="title" translatable="yes">Type</property>
                 <property name="clickable">True</property>
                 <property name="sort-indicator">True</property>
+                <child>
+                  <object class="GtkCellRendererText" id="col_type_renderer">
+                    <property name="background-gdk">#000000000000</property>
+                    <property name="editable">True</property>
+                    <property name="font">Normal</property>
+                    <property name="foreground-gdk">#000000000000</property>
+                    <property name="single-paragraph-mode">True</property>
+                    <property name="background-rgba">rgba(0,0,0,0)</property>
+                    <property name="foreground-rgba">rgba(0,0,0,0)</property>
+                  </object>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
               </object>
             </child>
             <child>
-              <object class="GtkTreeViewColumn" id="description">
+              <object class="GtkTreeViewColumn" id="col_description">
                 <property name="resizable">True</property>
-                <property name="sizing">fixed</property>
+                <property name="sizing">autosize</property>
                 <property name="min-width">200</property>
                 <property name="title" translatable="yes">Description</property>
                 <property name="clickable">True</property>
                 <property name="sort-indicator">True</property>
+                <child>
+                  <object class="GtkCellRendererText" id="col_description_renderer">
+                    <property name="background-gdk">#000000000000</property>
+                    <property name="editable">True</property>
+                    <property name="font">Normal</property>
+                    <property name="foreground-gdk">#000000000000</property>
+                    <property name="single-paragraph-mode">True</property>
+                    <property name="background-rgba">rgba(0,0,0,0)</property>
+                    <property name="foreground-rgba">rgba(0,0,0,0)</property>
+                  </object>
+                  <attributes>
+                    <attribute name="text">1</attribute>
+                  </attributes>
+                </child>
               </object>
             </child>
           </object>
