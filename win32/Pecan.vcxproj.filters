@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Application\Misc">
+      <UniqueIdentifier>{3474e85e-04d7-489f-86ec-c840691c3e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{f994a830-4916-4b80-9de4-0bbbab81ece7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\MicroTAR">
+      <UniqueIdentifier>{952eff94-4d3e-480d-95d1-92919f21eac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\cvector">
+      <UniqueIdentifier>{e832c1b2-9cd5-4ae5-96b0-d59b0084d1fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pecan">
+      <UniqueIdentifier>{722cb62f-ea2d-41d0-be3b-5508e72326ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pecan\Utilities">
+      <UniqueIdentifier>{458bf396-89e0-4696-90fa-0f0cedca9ad1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pecan\Parser and Objects">
+      <UniqueIdentifier>{12afbd89-8ea6-4d51-9603-2053f35f03a8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Pecan.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Pecan.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win32\main.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win32\stdafx.h">
+      <Filter>Application\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\microtar\src\microtar.h">
+      <Filter>Libraries\MicroTAR</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\cvector\cvector.h">
+      <Filter>Libraries\cvector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\cvector\cvector_utils.h">
+      <Filter>Libraries\cvector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\pecan.h">
+      <Filter>Pecan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\fileutils.h">
+      <Filter>Pecan\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\attribute.h">
+      <Filter>Pecan\Parser and Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\blob.h">
+      <Filter>Pecan\Parser and Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\parser.h">
+      <Filter>Pecan\Parser and Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\error.h">
+      <Filter>Pecan\Utilities</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\win32\main.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win32\stdafx.cpp">
+      <Filter>Application\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\microtar\src\microtar.c">
+      <Filter>Libraries\MicroTAR</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\pecan.c">
+      <Filter>Pecan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\fileutils.c">
+      <Filter>Pecan\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\attribute.c">
+      <Filter>Pecan\Parser and Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\blob.c">
+      <Filter>Pecan\Parser and Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parser.c">
+      <Filter>Pecan\Parser and Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\error.c">
+      <Filter>Pecan\Utilities</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

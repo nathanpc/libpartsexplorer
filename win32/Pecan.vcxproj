@@ -44,16 +44,18 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)..\lib\microtar\src;$(SolutionDir)..\lib\cvector;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)..\lib\microtar\src;$(SolutionDir)..\lib\cvector;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -69,7 +71,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -84,16 +86,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Pecan.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Pecan.h" />
+    <ClInclude Include="..\lib\cvector\cvector.h" />
+    <ClInclude Include="..\lib\cvector\cvector_utils.h" />
+    <ClInclude Include="..\lib\microtar\src\microtar.h" />
+    <ClInclude Include="..\src\attribute.h" />
+    <ClInclude Include="..\src\blob.h" />
+    <ClInclude Include="..\src\error.h" />
+    <ClInclude Include="..\src\fileutils.h" />
+    <ClInclude Include="..\src\parser.h" />
+    <ClInclude Include="..\src\pecan.h" />
+    <ClInclude Include="..\src\win32\main.h" />
+    <ClInclude Include="..\src\win32\stdafx.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Pecan.ico" />
@@ -104,6 +108,17 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\lib\microtar\src\microtar.c" />
+    <ClCompile Include="..\src\attribute.c" />
+    <ClCompile Include="..\src\blob.c" />
+    <ClCompile Include="..\src\error.c" />
+    <ClCompile Include="..\src\fileutils.c" />
+    <ClCompile Include="..\src\parser.c" />
+    <ClCompile Include="..\src\pecan.c" />
+    <ClCompile Include="..\src\win32\main.cpp" />
+    <ClCompile Include="..\src\win32\stdafx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
