@@ -45,6 +45,7 @@
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)..\lib\microtar\src;$(SolutionDir)..\lib\cvector;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)..\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -95,7 +96,9 @@
     <ClInclude Include="..\src\fileutils.h" />
     <ClInclude Include="..\src\parser.h" />
     <ClInclude Include="..\src\pecan.h" />
-    <ClInclude Include="..\src\win32\main.h" />
+    <ClInclude Include="..\src\win32\AboutDlg.h" />
+    <ClInclude Include="..\src\win32\MainWindow.h" />
+    <ClInclude Include="..\src\win32\MsgBoxes.h" />
     <ClInclude Include="..\src\win32\stdafx.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
@@ -117,8 +120,12 @@
     <ClCompile Include="..\src\fileutils.c" />
     <ClCompile Include="..\src\parser.c" />
     <ClCompile Include="..\src\pecan.c" />
-    <ClCompile Include="..\src\win32\main.cpp" />
+    <ClCompile Include="..\src\win32\AboutDlg.cpp" />
+    <ClCompile Include="..\src\win32\MainWindow.cpp" />
     <ClCompile Include="..\src\win32\stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\win32\MsgBoxes.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

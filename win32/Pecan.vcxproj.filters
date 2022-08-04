@@ -30,6 +30,12 @@
     <Filter Include="Pecan\Parser and Objects">
       <UniqueIdentifier>{12afbd89-8ea6-4d51-9603-2053f35f03a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\Dialogs">
+      <UniqueIdentifier>{e5827132-2f56-457b-869c-65494320370f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Utilities">
+      <UniqueIdentifier>{59773dce-f480-41f6-83c1-174897352558}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Pecan.ico">
@@ -51,7 +57,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\win32\main.h">
+    <ClInclude Include="..\src\win32\MainWindow.h">
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="..\src\win32\stdafx.h">
@@ -84,9 +90,15 @@
     <ClInclude Include="..\src\error.h">
       <Filter>Pecan\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\win32\AboutDlg.h">
+      <Filter>Application\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win32\MsgBoxes.h">
+      <Filter>Application\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\win32\main.cpp">
+    <ClCompile Include="..\src\win32\MainWindow.cpp">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="..\src\win32\stdafx.cpp">
@@ -113,5 +125,13 @@
     <ClCompile Include="..\src\error.c">
       <Filter>Pecan\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\win32\AboutDlg.cpp">
+      <Filter>Application\Dialogs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\win32\MsgBoxes.cpp">
+      <Filter>Application\Utilities</Filter>
+    </None>
   </ItemGroup>
 </Project>
