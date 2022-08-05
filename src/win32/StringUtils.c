@@ -20,15 +20,16 @@
  * 
  * @return           TRUE if the conversion was successful.
 */
-BOOL ConvertStringAToW(const char *szASCII, WCHAR *szUnicode) {
+BOOL ConvertStringAToW(const char *szASCII, WCHAR **szUnicode) {
 	SIZE_T nLen = strlen(szASCII) + 1;
 
 	// Allocate the Unicode string.
-	szUnicode = (WCHAR *)LocalAlloc(LMEM_FIXED, nLen * sizeof(WCHAR));
+	*szUnicode = (WCHAR *)LocalAlloc(LMEM_FIXED, nLen * sizeof(WCHAR));
 
 	// Perform the conversion.
-	if (MultiByteToWideChar(CP_ACP, 0, szASCII, -1, szUnicode, nLen) == 0) {
-		LocalFree(szUnicode);
+	if (MultiByteToWideChar(CP_ACP, 0, szASCII, -1, *szUnicode, nLen) == 0) {
+		LocalFree(*szUnicode);
+		MsgBoxLastError(NULL);
 		return FALSE;
 	}
 
@@ -45,15 +46,16 @@ BOOL ConvertStringAToW(const char *szASCII, WCHAR *szUnicode) {
  *
  * @return           TRUE if the conversion was successful.
 */
-BOOL ConvertStringWToA(const WCHAR *szUnicode, char *szASCII) {
+BOOL ConvertStringWToA(const WCHAR *szUnicode, char **szASCII) {
 	SIZE_T nLen = wcslen(szUnicode) + 1;
 
 	// Allocate the ASCII string.
-	szASCII = (char *)LocalAlloc(LMEM_FIXED, nLen * sizeof(char));
+	*szASCII = (char *)LocalAlloc(LMEM_FIXED, nLen * sizeof(char));
 
 	// Perform the conversion.
-	if (WideCharToMultiByte(CP_ACP, 0, szUnicode, -1, szASCII, nLen, NULL, NULL) == 0) {
-		LocalFree(szASCII);
+	if (WideCharToMultiByte(CP_ACP, 0, szUnicode, -1, *szASCII, nLen, NULL, NULL) == 0) {
+		LocalFree(*szASCII);
+		MsgBoxLastError(NULL);
 		return FALSE;
 	}
 

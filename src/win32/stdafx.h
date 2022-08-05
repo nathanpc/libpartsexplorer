@@ -34,9 +34,9 @@
 #include <memory.h>
 #include <tchar.h>
 
-// Resources header.
+// Resources header
 #include "../../win32/Resource.h"
 
-// Utilities.
+// Utilities
 #include "StringUtils.h"
 #include "MsgBoxes.h"

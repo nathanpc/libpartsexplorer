@@ -99,6 +99,9 @@
     <ClInclude Include="..\src\win32\StringUtils.h">
       <Filter>Application\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\win32\WinPecan.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win32\MainWindow.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="..\src\win32\MsgBoxes.c">
       <Filter>Application\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win32\WinPecan.cpp">
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

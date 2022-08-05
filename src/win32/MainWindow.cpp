@@ -50,8 +50,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	// Initialize the application.
 	if (!InitInstance(nCmdShow)) {
-	//	MsgBoxError(NULL, _T("Window Initialization Error"),
-	//		_T("An error occurred while trying to initialize the window."));
+		MsgBoxError(NULL, _T("Window Initialization Error"),
+			_T("An error occurred while trying to initialize the window."));
 		return FALSE;
 	}
 
@@ -144,6 +144,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		wmEvent = HIWORD(wParam);
 
 		switch (wmId) {
+		case IDM_FILE_OPENARCHIVE:
+			// Open archive.
+			MenuOpenArchive(hWnd, uMsg, wParam, lParam);
+			break;
 		case IDM_ABOUT:
 			// Show about dialog.
 			ShowAboutDlg(g_hInst, g_hWnd);
@@ -182,5 +186,15 @@ LRESULT WndMainClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
  */
 LRESULT WndMainDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	PostQuitMessage(0);
+	return 0;
+}
+
+/**
+ * Open Archive menu item event handler.
+ */
+LRESULT MenuOpenArchive(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (pecan.Read(_T("C:\\Users\\nathanpc\\Documents\\Visual Studio 2019\\Projects\\Pecan\\example\\example.tar")))
+		return 1;
+
 	return 0;
 }

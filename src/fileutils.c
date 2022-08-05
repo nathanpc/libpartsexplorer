@@ -30,10 +30,8 @@ bool file_exists(const char *fpath) {
 	LPTSTR szPath;
 
 	// Convert path string to Unicode.
-	if (!ConvertStringAToW(fpath, szPath)) {
-		MsgBoxLastError(NULL);
+	if (!ConvertStringAToW(fpath, &szPath))
 		return false;
-	}
 
 	// Get file attributes and return.
 	dwAttrib = GetFileAttributes(szPath);
@@ -57,10 +55,8 @@ bool is_dir(const char *path) {
 	LPTSTR szPath;
 
 	// Convert path string to Unicode.
-	if (!ConvertStringAToW(path, szPath)) {
-		MsgBoxLastError(NULL);
+	if (!ConvertStringAToW(path, &szPath))
 		return false;
-	}
 
 	// Get file attributes and return.
 	dwAttrib = GetFileAttributes(szPath);
