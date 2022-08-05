@@ -11,7 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#ifdef _WIN32
+#	include <windows.h>
+#	include "win32/MsgBoxes.h"
+#else
+#	include <unistd.h>
+#endif  // _WIN32
 
 /**
  * Checks if a file exists.
@@ -20,7 +25,24 @@
  * @return       TRUE if the file exists.
  */
 bool file_exists(const char *fpath) {
+#ifdef _WIN32
+	DWORD dwAttrib;
+	LPTSTR szPath;
+
+	// Convert path string to Unicode.
+	if (!ConvertStringAToW(fpath, szPath)) {
+		MsgBoxLastError(NULL);
+		return false;
+	}
+
+	// Get file attributes and return.
+	dwAttrib = GetFileAttributes(szPath);
+	LocalFree(szPath);
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES) &&
+		!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
+#else
 	return access(fpath, F_OK) != -1;
+#endif  // _WIN32
 }
 
 /**
@@ -30,6 +52,22 @@ bool file_exists(const char *fpath) {
  * @return      TRUE if the path represents an existing directory.
  */
 bool is_dir(const char *path) {
+#ifdef _WIN32
+	DWORD dwAttrib;
+	LPTSTR szPath;
+
+	// Convert path string to Unicode.
+	if (!ConvertStringAToW(path, szPath)) {
+		MsgBoxLastError(NULL);
+		return false;
+	}
+
+	// Get file attributes and return.
+	dwAttrib = GetFileAttributes(szPath);
+	LocalFree(szPath);
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES) &&
+		(dwAttrib & FILE_ATTRIBUTE_DIRECTORY);
+#else
 	struct stat sb;
 
 	// Make sure that we can stat the path.
@@ -38,6 +76,7 @@ bool is_dir(const char *path) {
 
 	// Check if it's a directory.
 	return S_ISDIR(sb.st_mode);
+#endif  // _WIN32
 }
 
 /**

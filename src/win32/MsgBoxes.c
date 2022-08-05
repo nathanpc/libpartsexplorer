@@ -1,5 +1,5 @@
 /**
- * MsgBoxes.cpp
+ * MsgBoxes.c
  * Some utility functions to work with Message Boxes more easily and write less
  * boilerplate for something that is so simple.
  *
@@ -33,4 +33,30 @@ int MsgBox(HWND hwndParent, UINT uType, LPCTSTR szTitle, LPCTSTR szText) {
  */
 int MsgBoxError(HWND hwndParent, LPCTSTR szTitle, LPCTSTR szText) {
 	return MessageBox(hwndParent, szText, szTitle, MB_OK | MB_ICONERROR);
+}
+
+/**
+ * Win32 last error message box.
+ *
+ * @param  hwndParent Parent window's handle or NULL if it doesn't have one.
+ * @return            ID of the button that was clicked by the user.
+ */
+int MsgBoxLastError(HWND hwndParent) {
+	DWORD dwError;
+	LPTSTR szError;
+	int nRet;
+
+	// Get the last error code.
+	if ((dwError = GetLastError()) == 0)
+		return IDOK;
+
+	// Get the detailed description of the error.
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL, dwError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&szError, 0, NULL);
+
+	// Show the message box and clean up afterwards.
+	nRet = MsgBoxError(hwndParent, _T("Win32 API Error"), szError);
+	LocalFree(szError);
+
+	return nRet;
 }

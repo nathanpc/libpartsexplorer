@@ -36,3 +36,7 @@
 
 // Resources header.
 #include "../../win32/Resource.h"
+
+// Utilities.
+#include "StringUtils.h"
+#include "MsgBoxes.h"

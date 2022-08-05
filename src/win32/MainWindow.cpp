@@ -7,7 +7,6 @@
 
 #include "MainWindow.h"
 
-#include "MsgBoxes.h"
 #include "AboutDlg.h"
 
 // Window sizing definitions.
@@ -51,8 +50,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	// Initialize the application.
 	if (!InitInstance(nCmdShow)) {
-		MsgBoxError(NULL, _T("Window Initialization Error"),
-			_T("An error occurred while trying to initialize the window."));
+	//	MsgBoxError(NULL, _T("Window Initialization Error"),
+	//		_T("An error occurred while trying to initialize the window."));
 		return FALSE;
 	}
 
@@ -175,6 +174,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 */
 LRESULT WndMainClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	DestroyWindow(hWnd);
+	return 0;
 }
 
 /**

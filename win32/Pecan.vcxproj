@@ -57,7 +57,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -100,6 +100,7 @@
     <ClInclude Include="..\src\win32\MainWindow.h" />
     <ClInclude Include="..\src\win32\MsgBoxes.h" />
     <ClInclude Include="..\src\win32\stdafx.h" />
+    <ClInclude Include="..\src\win32\StringUtils.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +124,12 @@
     <ClCompile Include="..\src\win32\AboutDlg.cpp" />
     <ClCompile Include="..\src\win32\MainWindow.cpp" />
     <ClCompile Include="..\src\win32\stdafx.cpp" />
+    <ClCompile Include="..\src\win32\StringUtils.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\win32\MsgBoxes.cpp" />
+    <ClCompile Include="..\src\win32\MsgBoxes.c">
+      <FileType>CppCode</FileType>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

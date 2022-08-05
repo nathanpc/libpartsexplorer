@@ -96,6 +96,9 @@
     <ClInclude Include="..\src\win32\MsgBoxes.h">
       <Filter>Application\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\win32\StringUtils.h">
+      <Filter>Application\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win32\MainWindow.cpp">
@@ -128,10 +131,11 @@
     <ClCompile Include="..\src\win32\AboutDlg.cpp">
       <Filter>Application\Dialogs</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\win32\MsgBoxes.cpp">
+    <ClCompile Include="..\src\win32\StringUtils.c">
       <Filter>Application\Utilities</Filter>
-    </None>
+    </ClCompile>
+    <ClCompile Include="..\src\win32\MsgBoxes.c">
+      <Filter>Application\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
