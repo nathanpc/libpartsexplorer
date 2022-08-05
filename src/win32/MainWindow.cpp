@@ -193,7 +193,7 @@ LRESULT WndMainDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
  * Open Archive menu item event handler.
  */
 LRESULT MenuOpenArchive(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	if (pecan.Read(_T("C:\\Users\\nathanpc\\Documents\\Visual Studio 2019\\Projects\\Pecan\\example\\example.tar")))
+	if (!pecan.Read(_T("C:\\Users\\nathanpc\\Documents\\Visual Studio 2019\\Projects\\Pecan\\example\\example.tar")))
 		return 1;
 
 	return 0;

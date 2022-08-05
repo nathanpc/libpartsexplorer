@@ -43,7 +43,7 @@ void Pecan::Initialize() {
  * Reads an component archive and populates the object.
  * 
  * @param  szPath Path to the component archive (file or folder).
- * @return        TRUE if an error occurred.
+ * @return        TRUE if the operation was successful.
  */
 BOOL Pecan::Read(LPCTSTR szPath) {
 	PECAN_ERR err;
@@ -51,18 +51,18 @@ BOOL Pecan::Read(LPCTSTR szPath) {
 
 	// Convert the path string and read the archive.
 	if (!ConvertStringWToA(szPath, &saPath))
-		return TRUE;
+		return FALSE;
 	err = pecan_read(&this->part, saPath);
 	LocalFree(saPath);
 
-	return FALSE;
+	return err == PECAN_OK;
 }
 
 /**
  * Writes an component archive to disk.
  * 
  * @param  szPath Path to the component archive file to write to.
- * @return        TRUE if an error occurred.
+ * @return        TRUE if the operation was successful.
  */
 BOOL Pecan::Write(LPCTSTR szPath) {
 	PECAN_ERR err;
@@ -70,11 +70,11 @@ BOOL Pecan::Write(LPCTSTR szPath) {
 
 	// Convert the path string and read the archive.
 	if (!ConvertStringWToA(szPath, &saPath))
-		return TRUE;
+		return FALSE;
 	err = pecan_write(&this->part, saPath);
 	LocalFree(saPath);
 
-	return FALSE;
+	return err == PECAN_OK;
 }
 
 /**
