@@ -10,8 +10,11 @@
 // Instance Variables
 HWND hwndDetail;
 HWND* lphwndParent;
+Image image;
 
 // Private methods.
+void DetailViewClearImage();
+void DetailViewUpdateImage();
 INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK DetailDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -67,6 +70,35 @@ void DetailViewUpdateContents(Pecan* pecan) {
 	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("description"));
 	if (attr.IsValid())
 		SetDlgItemText(hwndDetail, IDC_EDIT_DESCRIPTION, attr.GetValue());
+
+	// Image
+	DetailViewUpdateImage();
+}
+
+/**
+ * Sets the component image label in the detail view.
+ */
+void DetailViewUpdateImage() {
+	// Clear the current image.
+	DetailViewClearImage();
+
+#if 0
+	// TODO: Grab the component image from the archive.
+	image.LoadBitmap(buffer);
+
+	// Resize it and display it.
+	image.Resize(cx, cy);
+	SendDlgItemMessage(hwndDetail, IDC_IMAGE, STM_SETIMAGE, IMAGE_BITMAP,
+		(LPARAM)*image.GetBitmapHandle());
+#endif
+}
+
+/**
+ * Clears the component image from the detail view.
+ */
+void DetailViewClearImage() {
+	SendDlgItemMessage(hwndDetail, IDC_IMAGE, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)NULL);
+	image.DestroyBitmapHandle();
 }
 
 /**
@@ -75,7 +107,9 @@ void DetailViewUpdateContents(Pecan* pecan) {
  * @return TRUE if everything was fine.
  */
 INT_PTR DestroyDetailView() {
+	DetailViewClearImage();
 	EndDialog(hwndDetail, IDOK);
+
 	return (INT_PTR)TRUE;
 }
 

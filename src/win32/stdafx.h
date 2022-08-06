@@ -46,5 +46,8 @@
 #include "StringUtils.h"
 #include "MsgBoxes.h"
 
+// Abstractions
+#include "Image.h"
+
 // Styling definitions.
 #define DEFAULT_UI_MARGIN 7
