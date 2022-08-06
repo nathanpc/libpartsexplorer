@@ -40,3 +40,6 @@
 // Utilities
 #include "StringUtils.h"
 #include "MsgBoxes.h"
+
+// Styling definitions.
+#define DEFAULT_UI_MARGIN 7

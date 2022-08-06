@@ -97,10 +97,12 @@
     <ClInclude Include="..\src\parser.h" />
     <ClInclude Include="..\src\pecan.h" />
     <ClInclude Include="..\src\win32\AboutDlg.h" />
+    <ClInclude Include="..\src\win32\DetailView.h" />
     <ClInclude Include="..\src\win32\MainWindow.h" />
     <ClInclude Include="..\src\win32\MsgBoxes.h" />
     <ClInclude Include="..\src\win32\stdafx.h" />
     <ClInclude Include="..\src\win32\StringUtils.h" />
+    <ClInclude Include="..\src\win32\UIManager.h" />
     <ClInclude Include="..\src\win32\WinPecan.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
@@ -123,9 +125,11 @@
     <ClCompile Include="..\src\parser.c" />
     <ClCompile Include="..\src\pecan.c" />
     <ClCompile Include="..\src\win32\AboutDlg.cpp" />
+    <ClCompile Include="..\src\win32\DetailView.cpp" />
     <ClCompile Include="..\src\win32\MainWindow.cpp" />
     <ClCompile Include="..\src\win32\stdafx.cpp" />
     <ClCompile Include="..\src\win32\StringUtils.c" />
+    <ClCompile Include="..\src\win32\UIManager.cpp" />
     <ClCompile Include="..\src\win32\WinPecan.cpp" />
   </ItemGroup>
   <ItemGroup>

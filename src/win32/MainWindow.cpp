@@ -8,9 +8,10 @@
 #include "MainWindow.h"
 
 #include "AboutDlg.h"
+#include "DetailView.h"
 
 // Window sizing definitions.
-#define WND_WIDTH  400
+#define WND_WIDTH  500
 #define WND_HEIGHT 400
 
 // Private variables.
@@ -110,6 +111,10 @@ BOOL InitInstance(int nCmdShow) {
 	if (!PopulateWindow())
 		return FALSE;
 
+	// Make sure we are ready to handle things.
+	uiManager.SetInstance(&g_hInst);
+	uiManager.SetMainWindowHandle(&g_hWnd);
+
 	// Show and redraw the window.
 	ShowWindow(g_hWnd, nCmdShow);
 	UpdateWindow(g_hWnd);
@@ -123,6 +128,16 @@ BOOL InitInstance(int nCmdShow) {
  * @return TRUE if everything was successful.
  */
 BOOL PopulateWindow() {
+	// Calculate the detail view dialog size and position.
+	RECT rcDetailView;
+	GetClientRect(g_hWnd, &rcDetailView);
+	rcDetailView.bottom -= DEFAULT_UI_MARGIN;
+	rcDetailView.left   += DEFAULT_UI_MARGIN;
+	rcDetailView.right  -= rcDetailView.left + DEFAULT_UI_MARGIN;
+
+	// Create the detail view.
+	CreateDetailView(g_hInst, &g_hWnd, rcDetailView);
+
 	return TRUE;
 }
 
@@ -161,6 +176,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
 		}
 		break;
+	case WM_SIZE:
+		// Resizing the window.
+		ResizeDetailView(hWnd, uMsg, wParam, lParam);
+		break;
 	case WM_DESTROY:
 		// Destroys the window.
 		WndMainDestroy(hWnd, uMsg, wParam, lParam);
@@ -177,6 +196,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
  * Sends messages to close the main window.
 */
 LRESULT WndMainClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	DestroyDetailView();
 	DestroyWindow(hWnd);
 	return 0;
 }
@@ -193,8 +213,5 @@ LRESULT WndMainDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
  * Open Archive menu item event handler.
  */
 LRESULT MenuOpenArchive(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	if (!pecan.Read(_T("C:\\Users\\nathanpc\\Documents\\Visual Studio 2019\\Projects\\Pecan\\example\\example.tar")))
-		return 1;
-
-	return 0;
+	return uiManager.OpenArchiveInteractive();
 }

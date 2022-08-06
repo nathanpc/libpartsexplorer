@@ -8,7 +8,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "WinPecan.h"
+#include "UIManager.h"
 
 // Global definitions.
 #define MAX_LOADSTRING 100
@@ -16,7 +16,7 @@
 // Global variables.
 HINSTANCE g_hInst;
 HWND g_hWnd;
-Pecan pecan;
+UIManager uiManager;
 
 // Initialization
 ATOM RegisterWndClass();

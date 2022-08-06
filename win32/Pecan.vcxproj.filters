@@ -102,6 +102,12 @@
     <ClInclude Include="..\src\win32\WinPecan.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\win32\UIManager.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win32\DetailView.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win32\MainWindow.cpp">
@@ -141,6 +147,12 @@
       <Filter>Application\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="..\src\win32\WinPecan.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win32\UIManager.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win32\DetailView.cpp">
       <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
