@@ -5,6 +5,11 @@
 
 #pragma once
 
+// Enable visual styles.
+#pragma comment(linker, "\"/manifestdependency:type='win32' \
+	name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+	processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 // Modify the following defines if you have to target a platform prior to the ones specified below.
 // Refer to MSDN for the latest info on corresponding values for different platforms.
 #ifndef WINVER                 // Allow use of features specific to Windows XP or later.
