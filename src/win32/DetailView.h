@@ -8,10 +8,14 @@
 #pragma once
 
 #include "stdafx.h"
+#include "WinPecan.h"
 
 // Initialization and Destruction
-void CreateDetailView(HINSTANCE hInst, HWND* lphwndParent, RECT rect);
+HWND* CreateDetailView(HINSTANCE hInst, HWND* lphwndParent, RECT rect);
 INT_PTR DestroyDetailView();
 
 // Event Forwarding
 LRESULT ResizeDetailView(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+// UI Controls
+void DetailViewUpdateContents(Pecan* pecan);

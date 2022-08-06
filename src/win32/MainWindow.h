@@ -16,6 +16,7 @@
 // Global variables.
 HINSTANCE g_hInst;
 HWND g_hWnd;
+HWND* g_lphwndDetailView;
 UIManager uiManager;
 
 // Initialization

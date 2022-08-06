@@ -14,17 +14,21 @@ class UIManager {
 protected:
 	HINSTANCE* lphInst;
 	HWND* lphWnd;
+	HWND* lphwndDetail;
 	Pecan pecan;
 
 public:
 	// Constructors and Destructors
 	UIManager();
-	UIManager(HINSTANCE* hInst, HWND* hwndParent);
 
 	// Important Bits Setters
-	void SetInstance(HINSTANCE* hInst);
-	void SetMainWindowHandle(HWND* hWnd);
+	void SetInstance(HINSTANCE* lphInst);
+	void SetMainWindowHandle(HWND* lphWnd);
+	void SetDetailWindowHandle(HWND* lphWnd);
 
 	// Common Operations.
 	LRESULT OpenArchiveInteractive();
+
+protected:
+	LRESULT PopulateDetailView();
 };

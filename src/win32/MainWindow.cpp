@@ -136,7 +136,8 @@ BOOL PopulateWindow() {
 	rcDetailView.right  -= rcDetailView.left + DEFAULT_UI_MARGIN;
 
 	// Create the detail view.
-	CreateDetailView(g_hInst, &g_hWnd, rcDetailView);
+	g_lphwndDetailView = CreateDetailView(g_hInst, &g_hWnd, rcDetailView);
+	uiManager.SetDetailWindowHandle(g_lphwndDetailView);
 
 	return TRUE;
 }

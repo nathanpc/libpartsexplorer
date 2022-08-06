@@ -6,6 +6,7 @@
  */
 
 #include "UIManager.h"
+#include "DetailView.h"
 
 /**
  * Constructs an empty UIManager object. Later make sure to call SetInstance and
@@ -14,17 +15,7 @@
 UIManager::UIManager() {
 	this->lphInst = NULL;
 	this->lphWnd = NULL;
-}
-
-/**
- * Constructs the UIManager object.
- * 
- * @param lphInst      Our application's instance.
- * @param lphwndParent The main window handle.
- */
-UIManager::UIManager(HINSTANCE* lphInst, HWND* lphwndParent) {
-	this->lphInst = lphInst;
-	this->lphWnd = lphwndParent;
+	this->lphwndDetail = NULL;
 }
 
 /**
@@ -46,6 +37,15 @@ void UIManager::SetMainWindowHandle(HWND* lphWnd) {
 }
 
 /**
+ * Sets the detail window handle for us to keep track of.
+ *
+ * @param lphWnd The detail window handle.
+ */
+void UIManager::SetDetailWindowHandle(HWND* lphWnd) {
+	this->lphwndDetail = lphWnd;
+}
+
+/**
  * Opens a Pecan archive interactively via an Open File dialog.
  * 
  * @return 0 if the operation was successful.
@@ -56,5 +56,16 @@ LRESULT UIManager::OpenArchiveInteractive() {
 		return 1;
 	}
 
+	// Populate the detail view.
+	return PopulateDetailView();
+}
+
+/**
+ * Populates the detail view with data from the internal Pecan archive object.
+ *
+ * @return 0 if the operation was successful.
+ */
+LRESULT UIManager::PopulateDetailView() {
+	DetailViewUpdateContents(&pecan);
 	return 0;
 }

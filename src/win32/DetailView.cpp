@@ -18,11 +18,13 @@ INT_PTR CALLBACK DetailDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 /**
  * Creates the detail view in its appropriate place.
  * 
- * @param hInst  Application's instance.
- * @param lphWnd Parent window to place the view into.
- * @param rect   Position and size of the detail view in the parent window.
+ * @param  hInst  Application's instance.
+ * @param  lphWnd Parent window to place the view into.
+ * @param  rect   Position and size of the detail view in the parent window.
+ * 
+ * @return        Pointer to the handle of the created window.
  */
-void CreateDetailView(HINSTANCE hInst, HWND* lphWnd, RECT rect) {
+HWND* CreateDetailView(HINSTANCE hInst, HWND* lphWnd, RECT rect) {
 	lphwndParent = lphWnd;
 
 	// Load some needed resources.
@@ -34,6 +36,37 @@ void CreateDetailView(HINSTANCE hInst, HWND* lphWnd, RECT rect) {
 		*lphWnd, DetailDlgProc, (LPARAM)&rect);
 	SetWindowPos(hwndDetail, HWND_TOP, rect.left, rect.top, rect.right, rect.bottom,
 		SWP_SHOWWINDOW);
+
+	return &hwndDetail;
+}
+
+/**
+ * Populates the detail view with contents from a Pecan archive.
+ * 
+ * @param pecan Pecan archive to get the contents from.
+ */
+void DetailViewUpdateContents(Pecan* pecan) {
+	PecanAttribute attr;
+
+	// Quantity
+	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("quantity"));
+	if (attr.IsValid())
+		SetDlgItemText(hwndDetail, IDC_EDIT_QUANTITY, attr.GetValue());
+
+	// Name
+	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("name"));
+	if (attr.IsValid())
+		SetDlgItemText(hwndDetail, IDC_EDIT_NAME, attr.GetValue());
+
+	// Package
+	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("package"));
+	if (attr.IsValid())
+		SetDlgItemText(hwndDetail, IDC_COMBO_PACKAGE, attr.GetValue());
+
+	// Description
+	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("description"));
+	if (attr.IsValid())
+		SetDlgItemText(hwndDetail, IDC_EDIT_DESCRIPTION, attr.GetValue());
 }
 
 /**
@@ -79,6 +112,7 @@ LRESULT ResizeDetailView(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
  * @param  uMsg   The message.
  * @param  wParam Additional message-specific information.
  * @param  lParam Additional message-specific information.
+ * 
  * @return        TRUE if we processed the message, and FALSE if we didn't.
  */
 INT_PTR CALLBACK DetailDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
