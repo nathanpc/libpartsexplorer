@@ -6,6 +6,8 @@
  */
 
 #include "UIManager.h"
+
+#include <commdlg.h>
 #include "DetailView.h"
 
 /**
@@ -51,7 +53,28 @@ void UIManager::SetDetailWindowHandle(HWND* lphWnd) {
  * @return 0 if the operation was successful.
  */
 LRESULT UIManager::OpenArchiveInteractive() {
-	if (!pecan.Read(_T("C:\\Users\\nathanpc\\Documents\\Visual Studio 2019\\Projects\\Pecan\\example\\example.tar"))) {
+	OPENFILENAME ofn = { 0 };
+	TCHAR szPath[MAX_PATH] = _T("");
+
+	// Clear the screen.
+	DetailViewClear();
+
+	// Populate the open file dialog structure.
+	ofn.lStructSize = sizeof(ofn);
+	ofn.lpstrTitle = L"Open Pecan Archive";
+	ofn.hwndOwner = *this->lphWnd;
+	ofn.lpstrFilter = _T("Pecan Archive (*.tar)\0*.tar\0All Files (*.*)\0*.*\0");
+	ofn.lpstrFile = szPath;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST;
+	ofn.lpstrDefExt = L"tar";
+
+	// Open the open folder dialog.
+	if (!GetOpenFileName(&ofn))
+		return 1;
+
+	// Read the archive.
+	if (!pecan.Read(szPath)) {
 		pecan.ShowLastErrorMessage();
 		return 1;
 	}

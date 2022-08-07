@@ -18,4 +18,5 @@ INT_PTR DestroyDetailView();
 LRESULT ResizeDetailView(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 // UI Controls
+void DetailViewClear();
 void DetailViewUpdateContents(Pecan* lpPecan);

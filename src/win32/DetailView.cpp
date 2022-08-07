@@ -162,6 +162,13 @@ BOOL DetailViewPopulateAttributes(Pecan* pecan) {
 }
 
 /**
+ * Clears the contents of the detail view.
+ */
+void DetailViewClear() {
+	// TODO
+}
+
+/**
  * Destroys the dialog instance.
  * 
  * @return TRUE if everything was fine.
