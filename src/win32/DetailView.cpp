@@ -18,9 +18,9 @@ Image image;
 
 // Private methods.
 void DetailViewClearImage();
-void DetailViewSetImage(Pecan* pecan);
+void DetailViewSetImage(Pecan* lpPecan);
 BOOL DetailViewInitListView();
-void DetailViewPopulateAttributes(Pecan* pecan);
+BOOL DetailViewPopulateAttributes(Pecan* lpPecan);
 INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK DetailDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -45,8 +45,13 @@ HWND* CreateDetailView(HINSTANCE* lphInst, HWND* lphWnd, RECT rect) {
 	// Embed the detail view dialog into the window.
 	hwndDetail = CreateDialogIndirectParam(*lphInst, (LPCDLGTEMPLATE)hgDialog,
 		*lphWnd, DetailDlgProc, (LPARAM)&rect);
-	if (!DetailViewInitListView())
+	if (!DetailViewInitListView()) {
+		MsgBoxError(*lphwndParent, _T("List view setup error"),
+			_T("An error occurred while trying to setup the parameters list view."));
 		return NULL;
+	}
+
+	// Resize the embedded dialog to fit the parent window.
 	SetWindowPos(hwndDetail, HWND_TOP, rect.left, rect.top, rect.right, rect.bottom,
 		SWP_SHOWWINDOW);
 
@@ -56,42 +61,45 @@ HWND* CreateDetailView(HINSTANCE* lphInst, HWND* lphWnd, RECT rect) {
 /**
  * Populates the detail view with contents from a Pecan archive.
  * 
- * @param pecan Pecan archive to get the contents from.
+ * @param lpPecan Pecan archive to get the contents from.
  */
-void DetailViewUpdateContents(Pecan* pecan) {
+void DetailViewUpdateContents(Pecan* lpPecan) {
 	PecanAttribute attr;
 
 	// Quantity
-	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("quantity"));
+	attr = lpPecan->GetAttribute(PECAN_MANIFEST, _T("quantity"));
 	if (attr.IsValid())
 		SetDlgItemText(hwndDetail, IDC_EDIT_QUANTITY, attr.GetValue());
 
 	// Name
-	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("name"));
+	attr = lpPecan->GetAttribute(PECAN_MANIFEST, _T("name"));
 	if (attr.IsValid())
 		SetDlgItemText(hwndDetail, IDC_EDIT_NAME, attr.GetValue());
 
 	// Package
-	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("package"));
+	attr = lpPecan->GetAttribute(PECAN_MANIFEST, _T("package"));
 	if (attr.IsValid())
 		SetDlgItemText(hwndDetail, IDC_COMBO_PACKAGE, attr.GetValue());
 
 	// Description
-	attr = pecan->GetAttribute(PECAN_MANIFEST, _T("description"));
+	attr = lpPecan->GetAttribute(PECAN_MANIFEST, _T("description"));
 	if (attr.IsValid())
 		SetDlgItemText(hwndDetail, IDC_EDIT_DESCRIPTION, attr.GetValue());
 
 	// Image
-	DetailViewSetImage(pecan);
+	DetailViewSetImage(lpPecan);
 
 	// Attributes
-	DetailViewPopulateAttributes(pecan);
+	if (!DetailViewPopulateAttributes(lpPecan)) {
+		MsgBoxError(*lphwndParent, _T("List view population error"),
+			_T("An error occurred while trying to populate the parameters list view."));
+	}
 }
 
 /**
  * Sets the component image label in the detail view.
  * 
- * @param pecan Pecan archive to get the image from.
+ * @param lpPecan Pecan archive to get the image from.
  */
 void DetailViewSetImage(Pecan* pecan) {
 	// Clear the current image.
@@ -119,18 +127,38 @@ void DetailViewClearImage() {
 /**
  * Populates the attributes list view.
  * 
- * @param pecan Pecan archive to get the attributes from.
+ * @param  lpPecan Pecan archive to get the attributes from.
+ * @return         TRUE if everything went fine.
  */
-void DetailViewPopulateAttributes(Pecan* pecan) {
+BOOL DetailViewPopulateAttributes(Pecan* pecan) {
+	HWND hwndAttrib = GetDlgItem(hwndDetail, IDC_LIST_ATTRS);
+	LVITEM lvItem = { 0 };
+
+	// Initialize LVITEM members that are common to all items.
+	lvItem.mask = LVIF_TEXT | LVIF_STATE;
+	lvItem.iSubItem = 0;
+	lvItem.stateMask = 0;
+	lvItem.state = 0;
+
+	// Insert the items into the list view.
 	for (SIZE_T i = 0; i < pecan->AttributesCount(PECAN_PARAMETERS); i++) {
+		// Get the attribute.
 		PecanAttribute attr = pecan->GetAttribute(PECAN_PARAMETERS, i);
 
-		// Append the string to the list box.
-		int pos = (int)SendDlgItemMessage(hwndDetail, IDC_LIST_ATTRS,
-			LB_ADDSTRING, 0, (LPARAM)attr.GetName());
-		SendDlgItemMessage(hwndDetail, IDC_LIST_ATTRS, LB_SETITEMDATA,
-			(WPARAM)pos, (LPARAM)i);
+		// Setup and insert the list view name item.
+		lvItem.iItem = i;
+		lvItem.pszText = attr.GetName();
+		if (ListView_InsertItem(hwndAttrib, &lvItem) == -1)
+			return FALSE;
+		LocalFree(lvItem.pszText);
+
+		// Insert the list view value item.
+		TCHAR* szText = attr.GetValue();
+		ListView_SetItemText(hwndAttrib, i, 1, szText)
+		LocalFree(szText);
 	}
+
+	return TRUE;
 }
 
 /**
