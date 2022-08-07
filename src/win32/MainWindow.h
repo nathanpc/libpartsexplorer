@@ -10,9 +10,6 @@
 #include "stdafx.h"
 #include "UIManager.h"
 
-// Global definitions.
-#define MAX_LOADSTRING 100
-
 // Global variables.
 HINSTANCE g_hInst;
 HWND g_hWnd;

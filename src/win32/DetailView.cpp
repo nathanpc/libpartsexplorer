@@ -7,36 +7,46 @@
 
 #include "DetailView.h"
 
+#include "commctrl.h"
+#include "Image.h"
+
 // Instance Variables
+HINSTANCE* lphInstance;
 HWND hwndDetail;
 HWND* lphwndParent;
 Image image;
 
 // Private methods.
 void DetailViewClearImage();
-void DetailViewUpdateImage();
+void DetailViewSetImage(Pecan* pecan);
+BOOL DetailViewInitListView();
+void DetailViewPopulateAttributes(Pecan* pecan);
 INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK DetailDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 /**
  * Creates the detail view in its appropriate place.
  * 
- * @param  hInst  Application's instance.
- * @param  lphWnd Parent window to place the view into.
- * @param  rect   Position and size of the detail view in the parent window.
+ * @param  lphInst Application's instance.
+ * @param  lphWnd  Parent window to place the view into.
+ * @param  rect    Position and size of the detail view in the parent window.
  * 
- * @return        Pointer to the handle of the created window.
+ * @return         Pointer to the handle of the created window.
  */
-HWND* CreateDetailView(HINSTANCE hInst, HWND* lphWnd, RECT rect) {
+HWND* CreateDetailView(HINSTANCE* lphInst, HWND* lphWnd, RECT rect) {
+	// Get some context.
+	lphInstance = lphInst;
 	lphwndParent = lphWnd;
 
 	// Load some needed resources.
-	HRSRC hResDialog = FindResource(hInst, MAKEINTRESOURCE(IDD_DETAILVIEW), RT_DIALOG);
-	HGLOBAL hgDialog = LoadResource(hInst, hResDialog);
+	HRSRC hResDialog = FindResource(*lphInst, MAKEINTRESOURCE(IDD_DETAILVIEW), RT_DIALOG);
+	HGLOBAL hgDialog = LoadResource(*lphInst, hResDialog);
 
 	// Embed the detail view dialog into the window.
-	hwndDetail = CreateDialogIndirectParam(hInst, (LPCDLGTEMPLATE)hgDialog,
+	hwndDetail = CreateDialogIndirectParam(*lphInst, (LPCDLGTEMPLATE)hgDialog,
 		*lphWnd, DetailDlgProc, (LPARAM)&rect);
+	if (!DetailViewInitListView())
+		return NULL;
 	SetWindowPos(hwndDetail, HWND_TOP, rect.left, rect.top, rect.right, rect.bottom,
 		SWP_SHOWWINDOW);
 
@@ -72,13 +82,18 @@ void DetailViewUpdateContents(Pecan* pecan) {
 		SetDlgItemText(hwndDetail, IDC_EDIT_DESCRIPTION, attr.GetValue());
 
 	// Image
-	DetailViewUpdateImage();
+	DetailViewSetImage(pecan);
+
+	// Attributes
+	DetailViewPopulateAttributes(pecan);
 }
 
 /**
  * Sets the component image label in the detail view.
+ * 
+ * @param pecan Pecan archive to get the image from.
  */
-void DetailViewUpdateImage() {
+void DetailViewSetImage(Pecan* pecan) {
 	// Clear the current image.
 	DetailViewClearImage();
 
@@ -99,6 +114,23 @@ void DetailViewUpdateImage() {
 void DetailViewClearImage() {
 	SendDlgItemMessage(hwndDetail, IDC_IMAGE, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)NULL);
 	image.DestroyBitmapHandle();
+}
+
+/**
+ * Populates the attributes list view.
+ * 
+ * @param pecan Pecan archive to get the attributes from.
+ */
+void DetailViewPopulateAttributes(Pecan* pecan) {
+	for (SIZE_T i = 0; i < pecan->AttributesCount(PECAN_PARAMETERS); i++) {
+		PecanAttribute attr = pecan->GetAttribute(PECAN_PARAMETERS, i);
+
+		// Append the string to the list box.
+		int pos = (int)SendDlgItemMessage(hwndDetail, IDC_LIST_ATTRS,
+			LB_ADDSTRING, 0, (LPARAM)attr.GetName());
+		SendDlgItemMessage(hwndDetail, IDC_LIST_ATTRS, LB_SETITEMDATA,
+			(WPARAM)pos, (LPARAM)i);
+	}
 }
 
 /**
@@ -214,6 +246,7 @@ INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	rcAttrib.left -= rcDialog.left;
 	rcAttrib.top -= rcDialog.top;
 	rcAttrib.right = rcDialog.right - rcDialog.left - rcAttrib.left;
+	LONG lColWidth = (rcAttrib.right - rcAttrib.left - 5) / 2;
 
 	// Expand the dynamic controls in the view.
 	SetWindowPos(hwndPackage, HWND_TOP, rcPackage.left, rcPackage.top, rcPackage.right,
@@ -223,5 +256,48 @@ INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	SetWindowPos(hwndAttrib, HWND_TOP, rcAttrib.left, rcAttrib.top, rcAttrib.right,
 		rcAttrib.bottom, SWP_SHOWWINDOW);
 
+	// Ensure the list view columns have a proper width.
+	ListView_SetColumnWidth(hwndAttrib, 0, lColWidth);
+	ListView_SetColumnWidth(hwndAttrib, 1, lColWidth);
+
 	return (INT_PTR)TRUE;
+}
+
+/**
+ * Setup the attributes list view control.
+ * 
+ * @return TRUE if everything went fine.
+ */
+BOOL DetailViewInitListView() {
+	TCHAR szText[MAX_LOADSTRING];
+	LVCOLUMN lvc;
+
+	// Get the size of the list view to split the columns evenly.
+	HWND hwndAttrib = GetDlgItem(hwndDetail, IDC_LIST_ATTRS);
+	RECT rcAttrib;
+	GetWindowRect(hwndAttrib, &rcAttrib);
+	LONG lColWidth = (rcAttrib.right - rcAttrib.left) / 2;
+
+	// Initialize the LVCOLUMN structure.
+	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+
+	// Setup and add the Name column.
+	LoadString(*lphInstance, IDS_LV_COL0_NAME, szText, MAX_LOADSTRING);
+	lvc.iSubItem = 0;
+	lvc.pszText = szText;
+	lvc.cx = lColWidth;
+	lvc.fmt = LVCFMT_LEFT;
+	if (ListView_InsertColumn(GetDlgItem(hwndDetail, IDC_LIST_ATTRS), 0, &lvc) == -1)
+		return FALSE;
+
+	// Setup and add the Value column.
+	LoadString(*lphInstance, IDS_LV_COL1_NAME, szText, MAX_LOADSTRING);
+	lvc.iSubItem = 1;
+	lvc.pszText = szText;
+	lvc.cx = lColWidth;
+	lvc.fmt = LVCFMT_LEFT;
+	if (ListView_InsertColumn(hwndAttrib, 1, &lvc) == -1)
+		return FALSE;
+
+	return TRUE;
 }

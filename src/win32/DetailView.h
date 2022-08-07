@@ -11,7 +11,7 @@
 #include "WinPecan.h"
 
 // Initialization and Destruction
-HWND* CreateDetailView(HINSTANCE hInst, HWND* lphwndParent, RECT rect);
+HWND* CreateDetailView(HINSTANCE* hInst, HWND* lphwndParent, RECT rect);
 INT_PTR DestroyDetailView();
 
 // Event Forwarding

@@ -86,7 +86,7 @@ ATOM RegisterWndClass() {
 	wcex.hInstance     = g_hInst;
 	wcex.hIcon         = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_PECAN));
 	wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW);
 	wcex.lpszMenuName  = MAKEINTRESOURCE(IDC_PECAN);
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -136,7 +136,7 @@ BOOL PopulateWindow() {
 	rcDetailView.right  -= rcDetailView.left + DEFAULT_UI_MARGIN;
 
 	// Create the detail view.
-	g_lphwndDetailView = CreateDetailView(g_hInst, &g_hWnd, rcDetailView);
+	g_lphwndDetailView = CreateDetailView(&g_hInst, &g_hWnd, rcDetailView);
 	uiManager.SetDetailWindowHandle(g_lphwndDetailView);
 
 	return TRUE;

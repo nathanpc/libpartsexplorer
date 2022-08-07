@@ -7,7 +7,9 @@
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
+#define IDS_LV_COL0_NAME                104
 #define IDM_EXIT                        105
+#define IDS_LV_COL1_NAME                105
 #define IDI_PECAN                       107
 #define IDI_SMALL                       108
 #define IDC_PECAN                       109

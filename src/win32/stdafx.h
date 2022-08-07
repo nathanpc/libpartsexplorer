@@ -39,15 +39,15 @@
 #include <memory.h>
 #include <tchar.h>
 
+// Global definitions
+#define MAX_LOADSTRING 100
+
 // Resources header
 #include "../../win32/Resource.h"
 
 // Utilities
 #include "StringUtils.h"
 #include "MsgBoxes.h"
-
-// Abstractions
-#include "Image.h"
 
 // Styling definitions.
 #define DEFAULT_UI_MARGIN 7
