@@ -22,8 +22,8 @@ public:
 	~Image();
 
 	// Getters and Setters
-	void LoadBitmap(LPCTSTR szPath);
-	void LoadBitmap(void* lpBuffer);
+	BOOL LoadBitmap(LPCTSTR szPath);
+	BOOL LoadBitmap(LPCVOID lpBuffer, SIZE_T nLen);
 	HBITMAP* GetBitmapHandle();
 	void DestroyBitmapHandle();
 

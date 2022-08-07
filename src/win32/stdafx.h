@@ -47,6 +47,7 @@
 
 // Utilities
 #include "StringUtils.h"
+#include "TempFileUtils.h"
 #include "MsgBoxes.h"
 
 // Styling definitions.

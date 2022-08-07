@@ -108,7 +108,12 @@
     <ClInclude Include="..\src\win32\DetailView.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\win32\Image.h" />
+    <ClInclude Include="..\src\win32\Image.h">
+      <Filter>Application\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win32\TempFileUtils.h">
+      <Filter>Application\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\win32\MainWindow.cpp">
@@ -157,6 +162,9 @@
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="..\src\win32\Image.cpp">
+      <Filter>Application\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win32\TempFileUtils.c">
       <Filter>Application\Utilities</Filter>
     </ClCompile>
   </ItemGroup>

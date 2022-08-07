@@ -103,6 +103,7 @@
     <ClInclude Include="..\src\win32\MsgBoxes.h" />
     <ClInclude Include="..\src\win32\stdafx.h" />
     <ClInclude Include="..\src\win32\StringUtils.h" />
+    <ClInclude Include="..\src\win32\TempFileUtils.h" />
     <ClInclude Include="..\src\win32\UIManager.h" />
     <ClInclude Include="..\src\win32\WinPecan.h" />
     <ClInclude Include="Resource.h" />
@@ -131,6 +132,7 @@
     <ClCompile Include="..\src\win32\MainWindow.cpp" />
     <ClCompile Include="..\src\win32\stdafx.cpp" />
     <ClCompile Include="..\src\win32\StringUtils.c" />
+    <ClCompile Include="..\src\win32\TempFileUtils.c" />
     <ClCompile Include="..\src\win32\UIManager.cpp" />
     <ClCompile Include="..\src\win32\WinPecan.cpp" />
   </ItemGroup>

@@ -24,40 +24,42 @@ Image::~Image() {
 /**
  * Loads a bitmap from a file.
  *
- * @param szPath Path to the bitmap file.
+ * @param  szPath Path to the bitmap file.
+ * @return        TRUE if the operation was successful.
  */
-void Image::LoadBitmap(LPCTSTR szPath) {
+BOOL Image::LoadBitmap(LPCTSTR szPath) {
 #ifdef UNDER_CE
 	this->hBitmap = SHLoadDIBitmap(szPath);
 #else
 	this->hBitmap = (HBITMAP)LoadImage(NULL, szPath, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 #endif  // UNDER_CE
+
+	return this->hBitmap != NULL;
 }
 
 /**
  * Loads a bitmap from a buffer.
  * 
- * @param lpBuffer Bitmap file buffer.
+ * @param  lpBuffer Bitmap file buffer.
+ * @param  nLen     Length of the buffer.
+ * 
+ * @return          TRUE if the operation was successful.
  */
-void Image::LoadBitmap(void* lpBuffer) {
-	// TODO: https://stackoverflow.com/a/2901465
-#if 0
-	tagBITMAPFILEHEADER bfh = *(tagBITMAPFILEHEADER*)lpBuffer;
-	tagBITMAPINFOHEADER bih = *(tagBITMAPINFOHEADER*)(lpBuffer + sizeof(tagBITMAPFILEHEADER));
-	RGBQUAD rgb = *(RGBQUAD*)(lpBuffer + sizeof(tagBITMAPFILEHEADER) + sizeof(tagBITMAPINFOHEADER));
+BOOL Image::LoadBitmap(LPCVOID lpBuffer, SIZE_T nLen) {
+	TCHAR szTempFile[MAX_PATH];
 
-	BITMAPINFO bi;
-	bi.bmiColors[0] = rgb;
-	bi.bmiHeader = bih;
+	// Create a temporary file.
+	if (!CreateTempFileContent(szTempFile, lpBuffer, nLen))
+		return FALSE;
 
-	char* pPixels = (lpBuffer + bfh.bfOffBits);
-	char* ppvBits;
+	// Load the temporary bitmap file.
+	if (!LoadBitmap(szTempFile))
+		return FALSE;
 
-	hBitmap = CreateDIBSection(NULL, &bi, DIB_RGB_COLORS, (void**)&ppvBits, NULL, 0);
-	SetDIBits(NULL, hBitmap, 0, bih.biHeight, pPixels, &bi, DIB_RGB_COLORS);
+	// Delete the temporary file.
+	DeleteFile(szTempFile);
 
-	GetObject(hBitmap, sizeof(BITMAP), &cBitmap);
-#endif
+	return TRUE;
 }
 
 /**
@@ -69,7 +71,7 @@ void Image::LoadBitmap(void* lpBuffer) {
 void Image::Resize(int cx, int cy) {
 	// Get the original bitmap into a structure.
 	BITMAP bmp = { 0 };
-	GetObject(hBitmap, sizeof(BITMAP), &bmp);
+	GetObject(this->hBitmap, sizeof(BITMAP), &bmp);
 
 	// Get some device contexts for the operation.
 	HDC hdcScreen = GetWindowDC(NULL);
@@ -77,11 +79,11 @@ void Image::Resize(int cx, int cy) {
 	HDC hdcOldBmp = CreateCompatibleDC(hdcScreen);
 
 	// Get some objects together for the new bitmap.
-	HBITMAP hBitmap = CreateCompatibleBitmap(hdcScreen, cx, cy);
-	HGDIOBJ hOldBmp = SelectObject(hdcNewBmp, hBitmap);
+	HBITMAP hNewBitmap = CreateCompatibleBitmap(hdcScreen, cx, cy);
+	HGDIOBJ hOldBmp = SelectObject(hdcNewBmp, hNewBitmap);
 
 	// Perform the resize operation.
-	SelectObject(hdcOldBmp, hBitmap);
+	SelectObject(hdcOldBmp, this->hBitmap);
 	StretchBlt(hdcNewBmp, 0, 0, cx, cy, hdcOldBmp, 0, 0, bmp.bmWidth,
 		bmp.bmHeight, SRCCOPY);
 
@@ -89,6 +91,10 @@ void Image::Resize(int cx, int cy) {
 	ReleaseDC(NULL, (HDC)hOldBmp);
 	DeleteDC(hdcOldBmp);
 	DeleteDC(hdcNewBmp);
+	DeleteObject(this->hBitmap);
+
+	// Use the new bitmap handle.
+	this->hBitmap = hNewBitmap;
 }
 
 /**

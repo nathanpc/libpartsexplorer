@@ -14,6 +14,7 @@
 #define PECAN_ERR       pecan_err_t
 #define PECAN_ATTR      pecan_attr_t
 #define PECAN_ATTR_TYPE pecan_attr_type_t
+#define PECAN_BLOB      pecan_blob_t
 
 /**
  * Pecan component attribute.
@@ -58,6 +59,10 @@ public:
 	SIZE_T AttributesCount(PECAN_ATTR_TYPE attrType);
 	PecanAttribute GetAttribute(PECAN_ATTR_TYPE attrType, SIZE_T nIndex);
 	PecanAttribute GetAttribute(PECAN_ATTR_TYPE attrType, LPCTSTR szName);
+
+	// Blobs
+	PECAN_BLOB GetImage();
+	PECAN_BLOB GetDatasheet();
 
 	// Error Handling
 	void ShowLastErrorMessage();

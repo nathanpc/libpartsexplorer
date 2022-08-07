@@ -10,11 +10,15 @@
 #include "commctrl.h"
 #include "Image.h"
 
-// Instance Variables
+// Instance variables.
 HINSTANCE* lphInstance;
 HWND hwndDetail;
 HWND* lphwndParent;
 Image image;
+
+// Private variables.
+int nImageWidth;
+int nImageHeight;
 
 // Private methods.
 void DetailViewClearImage();
@@ -105,15 +109,17 @@ void DetailViewSetImage(Pecan* pecan) {
 	// Clear the current image.
 	DetailViewClearImage();
 
-#if 0
-	// TODO: Grab the component image from the archive.
-	image.LoadBitmap(buffer);
+	// Grab the component image from the archive.
+	PECAN_BLOB blob = pecan->GetImage();
+	if (!image.LoadBitmap(blob.data, blob.len)) {
+		MsgBoxLastError(NULL);
+		return;
+	}
 
-	// Resize it and display it.
-	image.Resize(cx, cy);
+	// Resize and display it.
+	image.Resize(nImageWidth, nImageHeight);
 	SendDlgItemMessage(hwndDetail, IDC_IMAGE, STM_SETIMAGE, IMAGE_BITMAP,
 		(LPARAM)*image.GetBitmapHandle());
-#endif
 }
 
 /**
@@ -196,7 +202,7 @@ LRESULT ResizeDetailView(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	GetWindowRect(hwndDetail, &rcDialog);
 
 	// Calculate the new size and position.
-	rcDialog.top = 0;
+	rcDialog.top = DEFAULT_UI_MARGIN - 2;
 	rcDialog.left = DEFAULT_UI_MARGIN;
 	rcDialog.right = LOWORD(lParam) - rcDialog.left - DEFAULT_UI_MARGIN;
 	rcDialog.bottom = HIWORD(lParam) - rcDialog.top - DEFAULT_UI_MARGIN;
@@ -251,10 +257,6 @@ INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	RECT rcDialog;
 	GetWindowRect(hDlg, &rcDialog);
 
-	// Get the image static position and size.
-	RECT rcImage;
-	GetWindowRect(GetDlgItem(hDlg, IDC_IMAGE), &rcImage);
-
 	// Calculate the package combo box size and position.
 	HWND hwndPackage = GetDlgItem(hDlg, IDC_COMBO_PACKAGE);
 	RECT rcPackage;
@@ -294,6 +296,10 @@ INT_PTR DlgDetailResize(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	// Ensure the list view columns have a proper width.
 	ListView_SetColumnWidth(hwndAttrib, 0, lColWidth);
 	ListView_SetColumnWidth(hwndAttrib, 1, lColWidth);
+
+	// Get the image size.
+	nImageWidth = rcDesc.left - DEFAULT_UI_MARGIN;
+	nImageHeight = rcDesc.top + rcDesc.bottom;
 
 	return (INT_PTR)TRUE;
 }

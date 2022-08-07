@@ -39,7 +39,8 @@ int MsgBoxError(HWND hwndParent, LPCTSTR szTitle, LPCTSTR szText) {
  * Win32 last error message box.
  *
  * @param  hwndParent Parent window's handle or NULL if it doesn't have one.
- * @return            ID of the button that was clicked by the user.
+ * @return            ID of the button that was clicked by the user or 0 if
+ *                    no error was reported.
  */
 int MsgBoxLastError(HWND hwndParent) {
 	DWORD dwError;
@@ -48,7 +49,7 @@ int MsgBoxLastError(HWND hwndParent) {
 
 	// Get the last error code.
 	if ((dwError = GetLastError()) == 0)
-		return IDOK;
+		return 0;
 
 	// Get the detailed description of the error.
 	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,

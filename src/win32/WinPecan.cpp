@@ -125,6 +125,24 @@ PecanAttribute Pecan::GetAttribute(PECAN_ATTR_TYPE attrType, LPCTSTR szName) {
 }
 
 /**
+ * Gets the component image binary blob from the archive.
+ *
+ * @return Component image binary blob.
+ */
+PECAN_BLOB Pecan::GetImage() {
+	return this->part.image;
+}
+
+/**
+ * Gets the component datasheet binary blob from the archive.
+ * 
+ * @return Component datasheet binary blob.
+ */
+PECAN_BLOB Pecan::GetDatasheet() {
+	return this->part.datasheet;
+}
+
+/**
  * Shows a message box with the last error message produced by the Pecan API.
  */
 void Pecan::ShowLastErrorMessage() {
